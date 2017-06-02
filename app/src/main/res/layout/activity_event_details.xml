@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="mx.com.redcup.redcup.EventDetailsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/ct_eventdetails_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_event_details" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fam_attendance_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:menu_openDirection="up"
+        android:layout_margin="10dp"
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorAccentLight"
+        >
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_label="I will go"
+            android:src="@drawable/ic_attend"
+            app:fab_colorNormal="@color/colorAccentLight"
+            app:fab_colorPressed="@color/colorAccent"
+            />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_decline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_label="I will not go"
+            android:src="@drawable/ic_not_attending"
+            app:fab_colorNormal="@color/colorAccentLight"
+            app:fab_colorPressed="@color/colorAccent"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_maybe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_label="I am not sure i will go "
+            android:src="@drawable/ic_maybe"
+            app:fab_colorNormal="@color/colorAccentLight"
+            app:fab_colorPressed="@color/colorAccent"
+            />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</android.support.design.widget.CoordinatorLayout>
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="160dp" >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_margin="7dp"
+        app:cardCornerRadius="8dp"
+        app:elevation="2dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.facebook.login.widget.ProfilePictureView
+                android:id="@+id/iv_fb_userpic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/tv_event_title"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginStart="8dp">
+
+            </com.facebook.login.widget.ProfilePictureView>
+
+            <TextView
+                android:id="@+id/tv_event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="25dp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_event_content"
+                android:layout_width="wrap_content"
+                android:maxWidth="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_event_title"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/iv_fb_userpic"
+                android:maxLines="6"
+                android:textSize="15dp"
+                android:layout_alignParentRight="true"
+                >
+
+            </TextView>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

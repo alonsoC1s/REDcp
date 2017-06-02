@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "942622284074",
+    "firebase_url": "https://redcup-91172.firebaseio.com",
+    "project_id": "redcup-91172",
+    "storage_bucket": "redcup-91172.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942622284074:android:8420e4fbc3ba3303",
+        "android_client_info": {
+          "package_name": "mx.com.redcup.redcup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942622284074-il4l03kkk2mg6sbcpik3jsd8c3pppbph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mx.com.redcup.redcup",
+            "certificate_hash": "2a737205b0083a4b3d5263d3ca1cf7cdc03c76d9"
+          }
+        },
+        {
+          "client_id": "942622284074-v5i4l6vqn70ocsu6e2eq3ehi3m0d1tc6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mx.com.redcup.redcup",
+            "certificate_hash": "e85f34466217e88f6550bdbe1d9f190a01c13021"
+          }
+        },
+        {
+          "client_id": "942622284074-e0pb8s1s22i4e06m3a7ijkn1lnti2u0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASpvJF_Z72SLtUIWzAiTdf0LJakNMn7RM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942622284074-6loddb7b2qaltm0gvq55dvac7hbt0m4d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.redcupa.RedCupa-iOS"
+              }
+            },
+            {
+              "client_id": "942622284074-e0pb8s1s22i4e06m3a7ijkn1lnti2u0v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

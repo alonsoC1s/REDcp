@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mx.com.redcup.redcup.myNavigationFragments.UserProfileFragment"
+    android:layout_margin="3dp"
+    android:weightSum="1">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.facebook.login.widget.ProfilePictureView
+            android:id="@+id/iv_fb_profilepic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            >
+
+        </com.facebook.login.widget.ProfilePictureView>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/iv_fb_profilepic"
+            android:paddingLeft="10dp"
+            android:textSize="30sp"
+            android:maxWidth="160dp"
+            android:maxHeight="80dp"
+             />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_user_posts"
+            app:layout_constraintTop_toBottomOf="@id/iv_fb_profilepic"
+            >
+
+            </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="terminateAllSessions"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/LogOut"
+            android:paddingLeft="20dp"
+            app:layout_constraintLeft_toRightOf="@+id/tv_username"
+            />
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
