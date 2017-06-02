@@ -69,17 +69,7 @@ public class UserProfileFragment extends Fragment {
         rv.setLayoutManager(llm);
 
         //Firebase querying to set name and profile picture to user values
-        mDataBaseRef_users.child(getCurrentFirebaseUID()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userProfile = dataSnapshot.getValue(MyUsers.class);
-                profilePictureView.setProfileId(userProfile.getFacebookUID());
-                mUserName.setText(userProfile.getDisplayName());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        populateActivityData();
 
         //Get UI elements
         profilePictureView = (ProfilePictureView)view.findViewById(R.id.iv_fb_profilepic);
@@ -106,6 +96,21 @@ public class UserProfileFragment extends Fragment {
             Log.e(TAG,"User is unexpectedly null.");
         }
         return UID;
+    }
+
+    public void populateActivityData(){
+        mDataBaseRef_users.child(getCurrentFirebaseUID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userProfile = dataSnapshot.getValue(MyUsers.class);
+                profilePictureView.setProfileId(userProfile.getFacebookUID());
+                mUserName.setText(userProfile.getDisplayName());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
     }
 
 }
