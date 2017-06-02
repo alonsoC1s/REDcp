@@ -1,0 +1,3 @@
+# REDcp
+
+Redcupa Android application
