@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import mx.com.redcup.redcup.myNavigationFragments.FriendsFragment;
 import mx.com.redcup.redcup.myNavigationFragments.MapsFragment;
 import mx.com.redcup.redcup.myNavigationFragments.NearbyFragment;
+import mx.com.redcup.redcup.myNavigationFragments.SettingsFragment;
 import mx.com.redcup.redcup.myNavigationFragments.UserProfileFragment;
 
 public class NavActivity extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class NavActivity extends AppCompatActivity {
     NearbyFragment nearbyFragment = new NearbyFragment();
     FriendsFragment friendsFragment = new FriendsFragment();
     UserProfileFragment profileFragment = new UserProfileFragment();
+    SettingsFragment settingsFragment = new SettingsFragment();
 
     //Bottom nav, fragment switcher handler
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -51,6 +53,9 @@ public class NavActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_user_profile:
                     switchToFragment(profileFragment);
+                    return true;
+                case R.id.navigation_settings:
+                    switchToFragment(settingsFragment);
                     return true;
             }
             return false;

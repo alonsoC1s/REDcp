@@ -2,6 +2,7 @@ package mx.com.redcup.redcup.myNavigationFragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class UserProfileFragment extends Fragment {
     MyUsers userProfile;
 
     ProfilePictureView profilePictureView;
+    CollapsingToolbarLayout toolbarLayout;
     TextView mUserName;
 
 
@@ -43,8 +45,10 @@ public class UserProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_user_profile, container, false);
 
+
         // Getting handle of the Recycler view on the layout
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_user_posts);
+        toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.ct_userProfile_title);
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_user_profile);
         rv.setHasFixedSize(false);
 
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
@@ -70,10 +74,6 @@ public class UserProfileFragment extends Fragment {
 
         //Firebase querying to set name and profile picture to user values
         populateActivityData();
-
-        //Get UI elements
-        profilePictureView = (ProfilePictureView)view.findViewById(R.id.iv_fb_profilepic);
-        mUserName = (TextView)view.findViewById(R.id.tv_username);
 
 
         return view;
@@ -103,8 +103,10 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userProfile = dataSnapshot.getValue(MyUsers.class);
-                profilePictureView.setProfileId(userProfile.getFacebookUID());
-                mUserName.setText(userProfile.getDisplayName());
+                //profilePictureView.setProfileId(userProfile.getFacebookUID());
+                toolbarLayout.setTitle(userProfile.getDisplayName());
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
