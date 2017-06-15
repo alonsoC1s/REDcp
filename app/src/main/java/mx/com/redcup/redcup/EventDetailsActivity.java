@@ -4,6 +4,7 @@ package mx.com.redcup.redcup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -75,7 +76,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         //TODO Add a function to write new post to their profiles saying they changed their attendace status to <insert status>
         fabConfirmAttendance.setOnClickListener(new View.OnClickListener() { //User checked as attending
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 //Get the postId, and add the userID to the list of attendees
                 DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
                 String userUid = getCurrentFirebaseUID();
@@ -85,7 +86,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 attendance_listRef.updateChildren(attendanceUpdate);
 
-                Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
+                Snackbar.make(view,"You marked as attending",Snackbar.LENGTH_SHORT).show();
 
 
             }
@@ -93,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         fabDeclineAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not attending
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
                 String userUid = getCurrentFirebaseUID();
                 Map<String, Object> attendanceUpdate = new HashMap<>();
@@ -101,14 +103,15 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 attendance_listRef.updateChildren(attendanceUpdate);
 
-                Toast.makeText(getApplicationContext(),(userUid+" Is not going to "+postID),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),(userUid+" Is not going to "+postID),Toast.LENGTH_LONG).show();
+                Snackbar.make(view,"You declined invitation to this event",Snackbar.LENGTH_SHORT).show();
 
             }
         });
 
         fabMaybeAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not sure if attending
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
                 String userUid = getCurrentFirebaseUID();
 
@@ -117,14 +120,15 @@ public class EventDetailsActivity extends AppCompatActivity {
 
                 attendance_listRef.updateChildren(attendanceUpdate);
 
-                Toast.makeText(getApplicationContext(),(userUid+" Is not certain he will assist "+postID),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),(userUid+" Is not certain he will assist "+postID),Toast.LENGTH_LONG).show();
+                Snackbar.make(view,"You marked your attendance as uncertain",Snackbar.LENGTH_SHORT).show();
 
             }
         });
 
         authorPic.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
                 Intent intent = new Intent(getApplicationContext(),ProfileDetailsActivity.class);
                 intent.putExtra("user_id",authorUserID);

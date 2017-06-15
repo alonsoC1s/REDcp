@@ -33,7 +33,7 @@ public class MyUsers {
     }
 
 
-    public String getDisplayName() {return (displayName);}
+    public String getDisplayName() {return (displayName + " " + displaySecondName);}
     ////
     public String getFirebaseUID(){ return (this.userID);}
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -76,7 +77,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
         fabAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 //Get the user id, and add it to the authors list of friends
                 DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
                 String userUid = getCurrentFirebaseUID();
@@ -86,7 +87,8 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
                 user_friendsRef.updateChildren(userFiends);
 
-                Toast.makeText(getApplicationContext(),(userUid+" befriended "+ userID),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),(userUid+" befriended "+ userID),Toast.LENGTH_LONG).show();
+                Snackbar.make(view,"You just made a new friend!",Snackbar.LENGTH_SHORT).show();
 
 
             }
@@ -101,7 +103,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
         fabFollowUser.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 //Get the user id, and add it to the authors list of followers
                 DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
                 String userUid = getCurrentFirebaseUID();
@@ -111,7 +113,8 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
                 user_friendsRef.updateChildren(userFiends);
 
-                Toast.makeText(getApplicationContext(),(userUid+" now follows "+ userID),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),(userUid+" now follows "+ userID),Toast.LENGTH_LONG).show();
+                Snackbar.make(view,"You are now a follower...",Snackbar.LENGTH_SHORT).show();
             }
         });
 

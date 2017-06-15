@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import mx.com.redcup.redcup.MyHolders.NearbyEventsHolder;
+import mx.com.redcup.redcup.MyHolders.UserProfileEventsHolder;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
@@ -46,17 +47,19 @@ public class UserProfileFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_user_profile, container, false);
 
 
-        // Getting handle of the Recycler view on the layout
+        //Getting UI elements
         toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.ct_userProfile_title);
+        profilePictureView = (ProfilePictureView) view.findViewById(R.id.iv_profile_userpic);
+        // Getting handle of the Recycler view on the layout
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_user_profile);
         rv.setHasFixedSize(false);
 
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
         // TODO Filter the events and show only those created by user. If statement that checks MyEvents object author attribute if == me
-        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, NearbyEventsHolder>(MyEvents.class, R.layout.card_item, NearbyEventsHolder.class ,mDatabase){
+        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class, R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
             @Override
-            protected void populateViewHolder(NearbyEventsHolder viewHolder, MyEvents event, int position) {
+            protected void populateViewHolder(UserProfileEventsHolder viewHolder, MyEvents event, int position) {
 
                 viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
                 viewHolder.setContent(event.getEventName());
@@ -103,7 +106,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userProfile = dataSnapshot.getValue(MyUsers.class);
-                //profilePictureView.setProfileId(userProfile.getFacebookUID());
+                profilePictureView.setProfileId(userProfile.getFacebookUID());
                 toolbarLayout.setTitle(userProfile.getDisplayName());
 
 
