@@ -22,13 +22,12 @@ public class MyEvents {
     public Map<String, AttendanceStatus> attendance_list = new HashMap<>();
     public Map<String, String> invitee_list = new HashMap<>();
     public boolean eventPublic;
-    public Date eventDate;
+    public MyDate eventDate;
 
 
     public MyEvents(){
         //Default empty constructor
     }
-
 
     public MyEvents(String name,String content, String userID, Double lat, Double lng, boolean eventPublic,
                     String eventID, int year, int month, int day,
@@ -42,7 +41,7 @@ public class MyEvents {
         this.eventPublic = eventPublic;
         this.eventID = eventID;
 
-        eventDate = new Date(year,month,day,hour,minute);
+        eventDate = new MyDate(year,month,day,hour,minute);
 
     }
 
@@ -59,8 +58,9 @@ public class MyEvents {
 
     public String getEventID(){return eventID;}
 
-    public String getEventHour(){ return ( String.valueOf(eventDate.getHours() % 12)); }
+    public String getEventHour(){ return ( String.valueOf(eventDate.getHour() % 12)); }
     public String getEventMinutes(){ return String.valueOf(eventDate.getMinutes());}
+
 
     //TODO: Create a method that adds UIDs of the users invited. Only if private; Add Timestamp to markers
 

@@ -21,7 +21,7 @@ import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
-public class NearbyEventsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class EventsRecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     private final TextView mEventName;
     private final TextView mEventContent;
     private final ProfilePictureView mProfilePic;
@@ -34,7 +34,7 @@ public class NearbyEventsHolder extends RecyclerView.ViewHolder implements View.
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent");
 
 
-    public NearbyEventsHolder(View itemView) {
+    public EventsRecyclerHolder(View itemView) {
         super(itemView);
         mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
         mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);

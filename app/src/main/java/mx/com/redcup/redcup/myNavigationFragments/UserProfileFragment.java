@@ -21,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import mx.com.redcup.redcup.MyHolders.NearbyEventsHolder;
 import mx.com.redcup.redcup.MyHolders.UserProfileEventsHolder;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
@@ -41,15 +40,18 @@ public class UserProfileFragment extends Fragment {
     DatabaseReference mDataBaseRef_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     DatabaseReference mDatabase;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_user_profile, container, false);
-
+        final String currentUID = getCurrentFirebaseUID();
 
         //Getting UI elements
         toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.ct_userProfile_title);
         profilePictureView = (ProfilePictureView) view.findViewById(R.id.iv_profile_userpic);
+
         // Getting handle of the Recycler view on the layout
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_user_profile);
         rv.setHasFixedSize(false);
@@ -81,6 +83,7 @@ public class UserProfileFragment extends Fragment {
 
         return view;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

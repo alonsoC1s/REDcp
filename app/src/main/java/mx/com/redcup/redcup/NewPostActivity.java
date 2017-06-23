@@ -53,7 +53,6 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
     EditText fieldEventDescription;
     Switch makeEventPrivate;
     Button pickDateBtn;
-    Button pickTimeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,18 +81,12 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
         fieldEventDescription = (EditText)findViewById(R.id.et_newpost_eventdescription);
         makeEventPrivate = (Switch) findViewById(R.id.switch_make_private);
         pickDateBtn = (Button) findViewById(R.id.btn_newpost_datepicker);
-        pickTimeBtn = (Button) findViewById(R.id.btn_newpost_timepicker);
+
 
         pickDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerDialog.show();
-            }
-        });
-
-        pickTimeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 timePickerDialog.show();
             }
         });

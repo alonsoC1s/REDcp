@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import mx.com.redcup.redcup.MyHolders.NearbyEventsHolder;
+import mx.com.redcup.redcup.MyHolders.EventsRecyclerHolder;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 
@@ -35,9 +35,9 @@ public class NearbyFragment extends Fragment  {
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
         // TODO Filter the events and show only those at a certain distance
-        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, NearbyEventsHolder>(MyEvents.class, R.layout.card_item, NearbyEventsHolder.class, mDatabase) {
+        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, EventsRecyclerHolder>(MyEvents.class, R.layout.card_item, EventsRecyclerHolder.class, mDatabase) {
             @Override
-            protected void populateViewHolder(NearbyEventsHolder viewHolder, MyEvents event, int position) {
+            protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
 
                 viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
                 viewHolder.setContent(event.getEventName());
