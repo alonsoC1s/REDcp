@@ -45,7 +45,7 @@ File Architecture and breakdown:
 	Class for the Friends tab. Only contains one reyclerview that displays all events on the database. At the moment of beta testing there is no function that filters only the posts created by the user's friends. Clicking the cards displayed by the recyclerview opens EventDetailsActivity and passes the eventID to it so more detailed info about the event can be accessed. 
 
 --MapsFragment.java
-	Fragment for the map tab. Has several responsibilities: Get map from Google Maps api (OnMapReady), listen for clicks on markers and the map itself, displaying a Fab that triggers the process for creating a new event, and drawing the markers from the firebase database. Later on it will also be responsible for detecting the users current location, and monitoring geofences. 
+	Fragment for the map tab. Only draws markers if the event is set to public. Has several responsibilities: Get map from Google Maps api (OnMapReady), listen for clicks on markers and the map itself, displaying a Fab that triggers the process for creating a new event, and drawing the markers from the firebase database. Later on it will also be responsible for detecting the users current location, and monitoring geofences. 
 		
 --NearbyFragment.java
 	Friends fragment clone. Later it will be responsible for querying firebase, and getting the events closest to the user based on a radius selected by the user on the settings tab. 
@@ -79,7 +79,39 @@ File Architecture and breakdown:
 .......
 
 
+<strong> Firebase Database </strong> 
+The database has two parent nodes: Users_parent and Events_parent. Data inside these root nodes is keyed by unique push id in the case of events, and firebase user id in the case of users. The database is essentially a JSON object and can be treated as such. 
 
+Structure: 
+-Events_parent
+	-{push id}
+		-eventID: unique push id, same as parent node. 
+		-eventPublic: boolean that indicates if an event is public
+		-eventName
+		-eventContent
+		-eventLatitude: Double that represents latitude in latlng coordinate of event location
+		-eventLongitude: Double that represents longitude
+		-eventDate
+			-year
+			-month
+			-day
+			-hours
+			-minutes
+		-attendance_list
+			-[ userID : ATTENDANCE_STATUS ]
+			
+-Users_parent
+	-{userID}
+		-displayName: User's first name
+		-displaySecondName: User's second name
+		-facebookUID: int representing the user's unique facebook id. Used to obtain data from Facebook
+		-level: int that represents a user's level. Function to be implemented.
+		
+		
+		
+<strong> Tips for debugging </strong> 
+...
+		
     
     
     
