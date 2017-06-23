@@ -6,7 +6,7 @@ Using Firebase as database, with Firebase UI
 
 File Architecture and breakdown: 
 
-Packages: 
+<strong> Packages: </strong> 
 -MyDataModels
   Java classes for event, users, and enum class to handle attendance status.
   Data models for events and users are used to retrieve firebase data as native objects. 
@@ -43,8 +43,21 @@ Files:
 =========
 -MyNavigationFragments
 --FriendsFragments.java
-    Class for the Friends tab. Only contains one reyclerview that displays all events on the database. At the moment of beta testing there is no function that filters only the posts created by the user's friends 
-    
+    Class for the Friends tab. Only contains one reyclerview that displays all events on the database. At the moment of beta testing there is no function that filters only the posts created by the user's friends. Clicking the cards displayed by the recyclerview opens EventDetailsActivity and passes the eventID to it so more detailed info about the event can be accessed. 
+
+--MapsFragment.java
+		Fragment for the map tab. Has several responsibilities: Get map from Google Maps api (OnMapReady), listen for clicks on markers and the map itself, displaying a Fab that triggers the process for creating a new event, and drawing the markers from the firebase database. Later on it will also be responsible for detecting the users current location, and monitoring geofences. 
+		
+--NearbyFragment.java
+		Friends fragment clone. Later it will be responsible for querying firebase, and getting the events closest to the user based on a radius selected by the user on the settings tab. 
+		
+--UserProfileFragment.java
+		Displays the user profile. Composed of a coordinator layout and appbarlayout. Displays the user's profile, which will contain the events created by the user, as well as "posts" which will be triggered when the user befriends another user, or marks attendance status to a certain event. The post functionality is yet to be implemented
+		
+--UserSettingsFragment.java
+		Shows app settings and configurations the user may want to tweak, like distance to show nearby events. At the moment it only contains the log out button 
+		
+
     
     
     
