@@ -2,6 +2,7 @@ package mx.com.redcup.redcup.myNavigationFragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.common.images.ImageManager;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +25,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 
 import mx.com.redcup.redcup.MyHolders.UserProfileEventsHolder;
 import mx.com.redcup.redcup.R;
@@ -39,6 +50,8 @@ public class UserProfileFragment extends Fragment {
 
     DatabaseReference mDataBaseRef_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     DatabaseReference mDatabase;
+    private StorageReference mStorageRef;
+
 
 
 
@@ -58,6 +71,8 @@ public class UserProfileFragment extends Fragment {
 
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         // TODO Filter the events and show only those created by user. If statement that checks MyEvents object author attribute if == me
         RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class, R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
             @Override
