@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,8 +45,9 @@ public class UserProfileFragment extends Fragment {
 
     MyUsers userProfile;
 
-    ProfilePictureView profilePictureView;
+    //ProfilePictureView profilePictureView;
     CollapsingToolbarLayout toolbarLayout;
+    ImageView profilePicture;
     TextView mUserName;
 
 
@@ -63,7 +66,8 @@ public class UserProfileFragment extends Fragment {
 
         //Getting UI elements
         toolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.ct_userProfile_title);
-        profilePictureView = (ProfilePictureView) view.findViewById(R.id.iv_profile_userpic);
+        profilePicture = (ImageView) view.findViewById(R.id.civ_profilePicture);
+        //profilePictureView = (ProfilePictureView) view.findViewById(R.id.iv_profile_userpic);
 
         // Getting handle of the Recycler view on the layout
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_user_profile);
@@ -71,7 +75,7 @@ public class UserProfileFragment extends Fragment {
 
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference().child(getCurrentFirebaseUID()).child("profile_picture.png");
 
         // TODO Filter the events and show only those created by user. If statement that checks MyEvents object author attribute if == me
         RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class, R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
@@ -124,7 +128,8 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userProfile = dataSnapshot.getValue(MyUsers.class);
-                profilePictureView.setProfileId(userProfile.getFacebookUID());
+                //profilePictureView.setProfileId(userProfile.getFacebookUID());
+                Glide.with(getActivity()).using(new FirebaseImageLoader()).load(mStorageRef).into(profilePicture);
                 toolbarLayout.setTitle(userProfile.getDisplayName());
 
 
