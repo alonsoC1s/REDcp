@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 
 import com.facebook.login.widget.ProfilePictureView;
+import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,12 +26,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.nlopez.smartlocation.OnGeofencingTransitionListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
+import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity implements OnGeofencingTransitionListener {
 
     private static final String TAG = "EventDetailsActivity" ;
     public DatabaseReference mDatabase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
@@ -47,6 +52,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton fabMaybeAttendance;
 
     public String authorUserID;
+    public Double currentEventLat;
+    public Double currentEventLng;
 
 
     @Override
@@ -85,6 +92,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                 attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_CONFIRMED);
 
                 attendance_listRef.updateChildren(attendanceUpdate);
+
+                activateGeofence(postID);
 
                 //Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
                 Snackbar.make(view,"You marked as attending",Snackbar.LENGTH_SHORT).show();
@@ -143,6 +152,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void activateGeofence(String postID){
+        Toast.makeText(this,"The geofence was activated", Toast.LENGTH_SHORT).show();
+        //TODO: Activate geofence
+        GeofenceModel eventGeofence = new GeofenceModel.Builder(postID)
+                .setTransition(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setLatitude(currentEventLat).setLongitude(currentEventLng)
+                .setRadius(150).build();
+
+        SmartLocation.with(getApplicationContext()).geofencing().add(eventGeofence)
+                .start(this);
+    }
+
     public String getCurrentFirebaseUID(){
         String UID = "";
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -194,6 +215,10 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyEvents event = dataSnapshot.getValue(MyEvents.class);
                 //TODO Set the scrim to some picture. setStatusBarScrim(Drawable)
+
+                currentEventLat = event.getEventLatitude();
+                currentEventLng = event.getEventLongitude();
+
                 postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(event.getEventName());
                 authorName.setText(event.getUserID());
@@ -213,4 +238,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onGeofenceTransition(TransitionGeofence transitionGeofence) {
+
+        Toast.makeText(this, "You just entered a new event", Toast.LENGTH_SHORT).show();
+    }
 }

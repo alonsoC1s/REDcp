@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="#ffff"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="55dp"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:background="#ffff"
+        >
+    <TextView
+        android:id="@+id/tv_modalsheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Name"
+        android:textSize="25dp"
+        android:textColor="#000"
+        />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_below="@+id/header_container"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_modalsheet_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15dp"
+            android:text="Content"
+            />
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -43,6 +43,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder implements Vie
 
         context = itemView.getContext();
 
+
         mCard.setClickable(true);
         mCard.setOnClickListener(this);
 

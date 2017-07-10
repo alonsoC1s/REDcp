@@ -73,20 +73,10 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/switch_make_private"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:text="pick date"
-            />
+            tools:layout_editor_absoluteX="159dp" />
 
-        <Button
-            android:id="@+id/btn_newpost_timepicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/switch_make_private"
-            app:layout_constraintStart_toEndOf="@id/btn_newpost_datepicker"
-            android:text="pick time"
-            />
 
 
     </android.support.constraint.ConstraintLayout>

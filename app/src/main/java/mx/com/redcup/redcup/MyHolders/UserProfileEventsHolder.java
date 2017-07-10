@@ -41,6 +41,7 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
 
         context = itemView.getContext();
 
+
         mCard.setClickable(true);
 
 

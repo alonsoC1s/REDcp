@@ -25,6 +25,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -118,40 +119,6 @@ public class NavActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().replace( R.id.Nav_activity_content, destination ).commit();
     }
 
-    //FAB on click
-    public void create_post(View view){
-        Log.i(TAG,"Initiating NewPostActivity.");
 
-        //Open the google place picker
-        final int PLACE_PICKER_REQUEST = 1;
-        try {
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            Intent intent = builder.build(this);
-            startActivityForResult(intent, PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(TAG,"Google play services repairable exception");
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(TAG,"Google play services not available exception");
-        }
-    }
-
-    //Google place picker callback. When location selected, open newPostActivity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK){
-
-            Place place = PlacePicker.getPlace(data, this);
-            LatLng placePickerLatLng = place.getLatLng();
-
-            Intent intent = new Intent(getApplicationContext(),NewPostActivity.class);
-
-            Bundle infoBundle = new Bundle();
-            infoBundle.putDouble("eventLatitude",placePickerLatLng.latitude);
-            infoBundle.putDouble("eventLongitude",placePickerLatLng.longitude);
-
-            intent.putExtras(infoBundle);
-            startActivity(intent);
-        }
-    }
 
 }

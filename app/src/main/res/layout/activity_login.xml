@@ -13,11 +13,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="96dp"
-        android:fontFamily="monospace"
         android:text="Redcupa"
         android:textColor="#ffffff"
         android:textSize="40dp"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView2" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/redcupa"
+        android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true" />
 
     <com.facebook.login.widget.LoginButton
