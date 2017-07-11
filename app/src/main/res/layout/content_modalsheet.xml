@@ -13,10 +13,12 @@
     <FrameLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="70dp"
         android:paddingTop="10dp"
         android:paddingLeft="10dp"
         android:background="#ffff"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         >
     <TextView
         android:id="@+id/tv_modalsheet_title"
@@ -27,9 +29,11 @@
         android:textColor="#000"
         />
 
+
+
     </FrameLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_below="@+id/header_container"
         android:padding="10dp"
         android:layout_width="match_parent"
@@ -42,6 +46,6 @@
             android:text="Content"
             />
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

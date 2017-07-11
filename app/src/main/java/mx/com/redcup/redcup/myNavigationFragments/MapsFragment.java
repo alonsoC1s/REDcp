@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -18,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -30,7 +30,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +45,6 @@ import java.util.Map;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
-import mx.com.redcup.redcup.NavActivity;
 import mx.com.redcup.redcup.NewPostActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
@@ -58,7 +56,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     String TAG = "MapsFragment";
 
     static GoogleMap googleMap_fragment;
-    DatabaseReference mDataBase;
+    DatabaseReference mDataBase_events;
 
     FloatingActionButton fabNewEvent;
     BottomSheetBehavior bottomSheetBehavior;
@@ -78,7 +76,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         @Override
         public void onClick(View v) {
 
-            DatabaseReference attendance_listRef = mDataBase.child(currentMarkerEventID).child("attendance_list");
+            DatabaseReference attendance_listRef = mDataBase_events.child(currentMarkerEventID).child("attendance_list");
             String userUid = getCurrentFirebaseUID();
 
             Map<String, Object> attendanceUpdate = new HashMap<>();
@@ -122,8 +120,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                     bottomSheetTitle.setTextColor(getResources().getColor(R.color.white));
+
+                    getEventDataOnMarkerClick(currentMarkerEventID);
                     break;
                 case BottomSheetBehavior.STATE_COLLAPSED:
+                    fabNewEvent.setOnClickListener(clickCollapsed);
+                    fabNewEvent.setImageResource(R.drawable.button_add);
+
+                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.white));
+                    bottomSheetTitle.setTextColor(getResources().getColor(R.color.black));
+                    break;
+                case BottomSheetBehavior.STATE_HIDDEN:
                     fabNewEvent.setOnClickListener(clickCollapsed);
                     fabNewEvent.setImageResource(R.drawable.button_add);
 
@@ -141,7 +148,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
         //Init firebase database
-        mDataBase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+        mDataBase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
 
         //Get UI Elements
         fabNewEvent = (FloatingActionButton) view.findViewById(R.id.fab_create_event);
@@ -201,7 +208,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 bottomSheetTitle.setText(marker.getTitle());
-                bottomSheetContent.setText(marker.getSnippet());
 
                 currentMarkerEventName = marker.getTitle();
                 currentMarkerEventID = String.valueOf(marker.getTag());
@@ -238,7 +244,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     public void drawMarkersFromFirebaseDB() {
 
-        mDataBase.addValueEventListener(new ValueEventListener() {
+        mDataBase_events.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
@@ -247,7 +253,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     if (newEvent.eventIsPublic()) {
                         LatLng coords = new LatLng(newEvent.getEventLatitude(), newEvent.getEventLongitude());
                         MarkerOptions options = new MarkerOptions().position(coords)
-                                .title(newEvent.getEventName()).snippet(newEvent.getEventContent());
+                                .title(newEvent.getEventName());
 
                         googleMap_fragment.addMarker(options).setTag(newEvent.getEventID());
                     } //End if statement
@@ -255,6 +261,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getEventDataOnMarkerClick(String eventId){
+        mDataBase_events.child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                MyEvents newEvent = dataSnapshot.getValue(MyEvents.class);
+                bottomSheetContent.setText(newEvent.getEventContent());
+
+
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
