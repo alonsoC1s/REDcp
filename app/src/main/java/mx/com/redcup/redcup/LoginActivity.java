@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Animate gradient login screen
         animationDrawable = (AnimationDrawable)relativeLayout.getBackground();
-        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setEnterFadeDuration(0);
         animationDrawable.setExitFadeDuration(2000);
         animationDrawable.start();
 

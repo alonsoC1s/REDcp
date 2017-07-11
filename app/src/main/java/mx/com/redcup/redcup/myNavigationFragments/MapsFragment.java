@@ -84,7 +84,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             attendance_listRef.updateChildren(attendanceUpdate);
 
-            //TODO: Activate geofencing for the event
+            //TODO: Activate geofencing for the event and generate QR code
 
             //Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
             Snackbar.make(v,String.format("You are now in %s attendance list", currentMarkerEventName),Snackbar.LENGTH_SHORT).show();
@@ -118,7 +118,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     fabNewEvent.setOnClickListener(clickExpanded);
                     fabNewEvent.setImageResource(R.drawable.ic_attend);
 
-                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     bottomSheetTitle.setTextColor(getResources().getColor(R.color.white));
 
                     getEventDataOnMarkerClick(currentMarkerEventID);

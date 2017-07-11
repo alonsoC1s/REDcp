@@ -10,10 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.facebook.login.widget.ProfilePictureView;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,12 +41,13 @@ import mx.com.redcup.redcup.myDataModels.RelationDetails;
 public class ProfileDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileDetailsActivity" ;
-    public DatabaseReference mDatabase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+    public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
     public DatabaseReference mDatabase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
 
     TextView postContent;
     TextView authorName;
-    ProfilePictureView authorPic;
+    ImageView authorPic;
+    ImageView coverPic;
     TextView displayTime;
 
     CollapsingToolbarLayout toolbarTitle;
@@ -68,7 +75,8 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         fabInviteUser = (com.github.clans.fab.FloatingActionButton)findViewById(R.id.fab_invite_user);
         fabFollowUser = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_follow_user);
         authorName = (TextView) findViewById(R.id.tv_eventDetails_userName);
-        authorPic = (ProfilePictureView) findViewById(R.id.tv_eventdetails_userpic);
+        authorPic = (ImageView) findViewById(R.id.tv_eventdetails_userpic);
+        coverPic = (ImageView) findViewById(R.id.profiledetails_coverimage);
         displayTime = (TextView) findViewById(R.id.tv_display_time);
 
 
@@ -78,19 +86,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         fabAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Get the user id, and add it to the authors list of friends
-                DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
-                String userUid = getCurrentFirebaseUID();
-
-                Map<String, Object> userFiends = new HashMap<>();
-                userFiends.put(userUid, RelationDetails.USER_FRIEND);
-
-                user_friendsRef.updateChildren(userFiends);
-
-                //Toast.makeText(getApplicationContext(),(userUid+" befriended "+ userID),Toast.LENGTH_LONG).show();
-                Snackbar.make(view,"You just made a new friend!",Snackbar.LENGTH_SHORT).show();
-
-
+                addFriend(userID,view);
             }
         });
 
@@ -104,27 +100,73 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         fabFollowUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Get the user id, and add it to the authors list of followers
-                DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
-                String userUid = getCurrentFirebaseUID();
-
-                Map<String, Object> userFiends = new HashMap<>();
-                userFiends.put(userUid, RelationDetails.USER_FOLLOWER);
-
-                user_friendsRef.updateChildren(userFiends);
-
-                //Toast.makeText(getApplicationContext(),(userUid+" now follows "+ userID),Toast.LENGTH_LONG).show();
-                Snackbar.make(view,"You are now a follower...",Snackbar.LENGTH_SHORT).show();
+                addFollower(userID, view);
             }
         });
-
-
 
         //Fill the fields for event name, profile picture, etc
         populateActivityData(userID);
 
+    }
+
+    public void addFriend(String userID, View view){
+        //Get the user id, and add it to the authors list of friends
+        DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
+        String currentUID = getCurrentFirebaseUID();
+
+        if (userID != currentUID) {
+            Map<String, Object> userFiends = new HashMap<>();
+            userFiends.put(currentUID, RelationDetails.USER_FRIEND);
+
+            user_friendsRef.updateChildren(userFiends);
+
+            Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(view, "You can't friend yourself", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    public void addFollower(String userID, View view){
+        //Get the user id, and add it to the authors list of followers
+        DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
+        String currentUID = getCurrentFirebaseUID();
+
+        if (userID != currentUID) {
+            Map<String, Object> userFiends = new HashMap<>();
+            userFiends.put(currentUID, RelationDetails.USER_FOLLOWER);
+
+            user_friendsRef.updateChildren(userFiends);
+
+            //Toast.makeText(getApplicationContext(),(userUid+" now follows "+ userID),Toast.LENGTH_LONG).show();
+            Snackbar.make(view, "You are now a follower...", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(view, "You can't follow yourself", Snackbar.LENGTH_SHORT).show();
+        }
+    }
 
 
+
+    public void populateActivityData(final String userID){
+        mDatabase_users.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                MyUsers user = dataSnapshot.getValue(MyUsers.class);
+                //TODO Set the scrim to some picture. setStatusBarScrim(Drawable)
+                ///postContent.setText(event.getEventContent());
+                toolbarTitle.setTitle(user.getDisplayName());
+                authorName.setText(user.getDisplayName());
+                Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                        .load(mStorage.child(userID).child("profile_picture")).signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .into(authorPic);
+
+                Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                        .load(mStorage.child(userID).child("cover_image")).signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .into(coverPic);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public String getCurrentFirebaseUID(){
@@ -137,28 +179,4 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         }
         return UID;
     }
-
-
-
-    public void populateActivityData(String userID){
-        mDatabase_users.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                MyUsers user = dataSnapshot.getValue(MyUsers.class);
-                //TODO Set the scrim to some picture. setStatusBarScrim(Drawable)
-                ///postContent.setText(event.getEventContent());
-                toolbarTitle.setTitle(user.getDisplayName());
-                authorName.setText(user.getDisplayName());
-                authorPic.setProfileId(user.getFacebookUID());
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-
 }

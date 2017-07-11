@@ -5,14 +5,20 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.facebook.login.widget.ProfilePictureView;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import mx.com.redcup.redcup.EventDetailsActivity;
 import mx.com.redcup.redcup.LoginActivity;
@@ -20,11 +26,13 @@ import mx.com.redcup.redcup.NavActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
+import static java.security.AccessController.getContext;
 
-public class EventsRecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
     private final TextView mEventName;
     private final TextView mEventContent;
-    private final ProfilePictureView mProfilePic;
+    private final ImageView mProfilePic;
     public String eventID;
 
     CardView mCard;
@@ -32,29 +40,29 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder implements Vie
     private Context context;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent");
-
+    public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
 
     public EventsRecyclerHolder(View itemView) {
         super(itemView);
         mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
         mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
-        mProfilePic = (ProfilePictureView) itemView.findViewById(R.id.iv_fb_userpic);
+        mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
         mCard = (CardView) itemView.findViewById(R.id.card_view);
 
         context = itemView.getContext();
 
-
         mCard.setClickable(true);
-        mCard.setOnClickListener(this);
+        mCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,EventDetailsActivity.class);
+                intent.putExtra("event_id",eventID);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
-    @Override
-    public void onClick(View v) {
-        Intent intent = new Intent(context,EventDetailsActivity.class);
-        intent.putExtra("event_id",eventID);
-        context.startActivity(intent);
-    }
 
     public void setTitle(String title){
         mEventName.setText(title);
@@ -69,13 +77,14 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder implements Vie
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyUsers user = dataSnapshot.getValue(MyUsers.class);
-                mProfilePic.setProfileId(user.getFacebookUID());
-                mProfilePic.setPresetSize(ProfilePictureView.SMALL);
-            }
 
+                Glide.with(itemView.getContext()).using(new FirebaseImageLoader())
+                        .load(mStorage.child(user.getFirebaseUID()).child("profile_picture"))
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(mProfilePic);
+
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 

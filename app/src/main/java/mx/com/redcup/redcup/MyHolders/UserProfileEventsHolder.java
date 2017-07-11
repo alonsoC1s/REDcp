@@ -2,9 +2,11 @@ package mx.com.redcup.redcup.MyHolders;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.widget.ProfilePictureView;
@@ -22,7 +24,7 @@ import mx.com.redcup.redcup.myDataModels.MyUsers;
 public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
     private final TextView mEventName;
     private final TextView mEventContent;
-    private final ProfilePictureView mProfilePic;
+    private final ImageView mProfilePic;
     public String eventID;
 
     CardView mCard;
@@ -36,7 +38,7 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
         super(itemView);
         mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
         mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
-        mProfilePic = (ProfilePictureView) itemView.findViewById(R.id.iv_fb_userpic);
+        mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
         mCard = (CardView) itemView.findViewById(R.id.card_view);
 
         context = itemView.getContext();
@@ -61,8 +63,7 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyUsers user = dataSnapshot.getValue(MyUsers.class);
-                mProfilePic.setProfileId(user.getFacebookUID());
-                mProfilePic.setPresetSize(ProfilePictureView.SMALL);
+
             }
 
             @Override

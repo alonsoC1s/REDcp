@@ -9,11 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.facebook.login.widget.ProfilePictureView;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +46,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     private static final String TAG = "EventDetailsActivity" ;
     public DatabaseReference mDatabase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
     public DatabaseReference mDatabase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
+    public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
 
     TextView postContent;
     TextView authorName;
-    ProfilePictureView authorPic;
+    ImageView authorPic;
     TextView displayTime;
 
     CollapsingToolbarLayout toolbarTitle;
@@ -55,8 +62,16 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public Double currentEventLat;
     public Double currentEventLng;
 
+    View.OnClickListener openProfileDetails = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getApplicationContext(),ProfileDetailsActivity.class);
+            intent.putExtra("user_id",authorUserID);
+            startActivity(intent);
+        }
+    };
 
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
@@ -75,7 +90,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         fabDeclineAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_decline);
         fabMaybeAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_maybe);
         authorName = (TextView) findViewById(R.id.tv_eventDetails_userName);
-        authorPic = (ProfilePictureView) findViewById(R.id.tv_eventdetails_userpic);
+        authorPic = (ImageView) findViewById(R.id.tv_eventdetails_userpic);
         displayTime = (TextView) findViewById(R.id.tv_display_time);
 
 
@@ -84,72 +99,68 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         fabConfirmAttendance.setOnClickListener(new View.OnClickListener() { //User checked as attending
             @Override
             public void onClick(View view) {
-                //Get the postId, and add the userID to the list of attendees
-                DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
-                String userUid = getCurrentFirebaseUID();
-
-                Map<String, Object> attendanceUpdate = new HashMap<>();
-                attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_CONFIRMED);
-
-                attendance_listRef.updateChildren(attendanceUpdate);
-
-                activateGeofence(postID);
-
-                //Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
-                Snackbar.make(view,"You marked as attending",Snackbar.LENGTH_SHORT).show();
-
-
+                confirmUserAttendance(postID,view);
             }
         });
 
         fabDeclineAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not attending
             @Override
             public void onClick(View view) {
-                DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
-                String userUid = getCurrentFirebaseUID();
-                Map<String, Object> attendanceUpdate = new HashMap<>();
-                attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_DECLINED);
-
-                attendance_listRef.updateChildren(attendanceUpdate);
-
-                //Toast.makeText(getApplicationContext(),(userUid+" Is not going to "+postID),Toast.LENGTH_LONG).show();
-                Snackbar.make(view,"You declined invitation to this event",Snackbar.LENGTH_SHORT).show();
-
+               declineInvitation(postID,view);
             }
         });
 
         fabMaybeAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not sure if attending
             @Override
             public void onClick(View view) {
-                DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
-                String userUid = getCurrentFirebaseUID();
-
-                Map<String, Object> attendanceUpdate = new HashMap<>();
-                attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_UNCERTAIN);
-
-                attendance_listRef.updateChildren(attendanceUpdate);
-
-                //Toast.makeText(getApplicationContext(),(userUid+" Is not certain he will assist "+postID),Toast.LENGTH_LONG).show();
-                Snackbar.make(view,"You marked your attendance as uncertain",Snackbar.LENGTH_SHORT).show();
-
+             markAttendanceUncertain(postID,view);
             }
         });
 
-        authorPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(getApplicationContext(),ProfileDetailsActivity.class);
-                intent.putExtra("user_id",authorUserID);
-                startActivity(intent);
-            }
-        });
+        authorPic.setOnClickListener(openProfileDetails);
 
         //Fill the fields for event name, profile picture, etc
         populateActivityData(postID);
 
 
+    }
 
+    public void confirmUserAttendance(String postID,View view){
+        //Get the postId, and add the userID to the list of attendees
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        String userUid = getCurrentFirebaseUID();
+
+        Map<String, Object> attendanceUpdate = new HashMap<>();
+        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_CONFIRMED);
+
+        attendance_listRef.updateChildren(attendanceUpdate);
+
+        activateGeofence(postID);
+
+        Snackbar.make(view,"You marked as attending",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void declineInvitation(String postID, View view){
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        String userUid = getCurrentFirebaseUID();
+        Map<String, Object> attendanceUpdate = new HashMap<>();
+        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_DECLINED);
+
+        attendance_listRef.updateChildren(attendanceUpdate);
+
+        Snackbar.make(view,"You declined invitation to this event",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void markAttendanceUncertain(String postID, View view){
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        String userUid = getCurrentFirebaseUID();
+
+        Map<String, Object> attendanceUpdate = new HashMap<>();
+        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_UNCERTAIN);
+
+        attendance_listRef.updateChildren(attendanceUpdate);
+
+        Snackbar.make(view,"You marked your attendance as uncertain",Snackbar.LENGTH_SHORT).show();
     }
 
     public void activateGeofence(String postID){
@@ -164,36 +175,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 .start(this);
     }
 
-    public String getCurrentFirebaseUID(){
-        String UID = "";
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
-            UID = user.getUid();
-        } else {
-            Log.e(TAG,"User is unexpectedly null.");
-        }
-        return UID;
-    }
+    public void setUserData(String uID){
+        Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                .load(mStorage.child(uID).child("profile_picture")).signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .into(authorPic);
 
-    public void setProfilePic(String uID){
-        mDatabase_users.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                MyUsers user = dataSnapshot.getValue(MyUsers.class);
-                authorUserID = user.getFirebaseUID();// this does not belong here
-                authorPic.setProfileId(user.getFacebookUID());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    public void setUserName(String uID){
         mDatabase_users.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -201,10 +187,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 authorName.setText(user.getDisplayName());
 
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
@@ -214,23 +198,16 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyEvents event = dataSnapshot.getValue(MyEvents.class);
-                //TODO Set the scrim to some picture. setStatusBarScrim(Drawable)
 
-                currentEventLat = event.getEventLatitude();
-                currentEventLng = event.getEventLongitude();
+                authorUserID = event.getUserID();
 
                 postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(event.getEventName());
                 authorName.setText(event.getUserID());
-                setUserName(event.getUserID());
-                setProfilePic(event.getUserID());
+                setUserData(event.getUserID());
                 String time = (event.getEventHour() + ":" + event.getEventMinutes() + " pm" );
                 displayTime.setText(time);
-
-
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -242,5 +219,16 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public void onGeofenceTransition(TransitionGeofence transitionGeofence) {
 
         Toast.makeText(this, "You just entered a new event", Toast.LENGTH_SHORT).show();
+    }
+
+    public String getCurrentFirebaseUID(){
+        String UID = "";
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            UID = user.getUid();
+        } else {
+            Log.e(TAG,"User is unexpectedly null.");
+        }
+        return UID;
     }
 }

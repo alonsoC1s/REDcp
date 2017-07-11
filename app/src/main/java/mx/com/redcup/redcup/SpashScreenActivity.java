@@ -1,4 +1,4 @@
-package mx.com.redcup.redcup.myNavigationFragments;
+package mx.com.redcup.redcup;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

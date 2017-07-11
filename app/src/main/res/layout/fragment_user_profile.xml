@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     >
 
     <android.support.design.widget.AppBarLayout
@@ -17,8 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorPrimary"
+            app:scrimVisibleHeightTrigger="150dp"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/image_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
 
             <android.support.v7.widget.Toolbar
