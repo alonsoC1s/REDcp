@@ -2,9 +2,7 @@
     android:id="@+id/mapfragment_coordinator_layout"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="false"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AppTheme.NoActionBar"
     >
 
     <android.support.design.widget.AppBarLayout

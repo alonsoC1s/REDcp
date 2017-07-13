@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.activity_login);
 
         relativeLayout = (RelativeLayout)findViewById(R.id.relative_layout);
@@ -72,10 +71,11 @@ public class LoginActivity extends AppCompatActivity {
         //Get reference to FB login button and assign callback manager to it
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = (LoginButton)findViewById(R.id.btn_fb_login);
-        loginButton.setReadPermissions("public_profile","user_birthday");
+        //loginButton = (LoginButton)findViewById(R.id.btn_fb_login);
+        //loginButton.setReadPermissions("public_profile","user_birthday");
 
         //Adding a callback manager to the Facebook login button
+        /*
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -95,6 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                         .show();
             }
         });
+        */
+
+
 
         mProfileTracker = new ProfileTracker() {
             @Override

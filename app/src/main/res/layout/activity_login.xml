@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relative_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/animation_list"
-    tools:context="mx.com.redcup.redcup.LoginActivity"
-    >
+    tools:context="mx.com.redcup.redcup.LoginActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="30dp"
         android:text="Redcupa"
         android:textColor="#ffffff"
         android:textSize="40dp"
@@ -21,19 +22,130 @@
         android:id="@+id/textView2" />
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/redcupa"
-        android:layout_below="@+id/textView2"
+        android:id="@+id/iv_vasoredcupa"
+        android:layout_marginTop="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/vaso_red"
         android:layout_centerHorizontal="true" />
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/btn_fb_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="233dp" />
+
+
+    <RelativeLayout
+        android:layout_below="@id/textView2"
+        android:layout_marginTop="210dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="10dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sign Up"
+                    android:textAllCaps="false"
+                    android:textSize="20dp"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    />
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="Log In"
+                    android:textAllCaps="false"
+                    android:textSize="20dp"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/buttons_SignUp"
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <!--
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/btn_fb_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                -->
+
+                <Button
+                    android:id="@+id/button_fb_signUp"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sign Up with Facebook"
+                    style="@style/com_facebook_button"
+                    />
+                <Button
+                    android:id="@+id/button_email_SignUp"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="90dp"
+                    android:text="Sign Up with Email"
+                    style="@style/com_facebook_button"
+                    android:background="@color/colorPrimaryLight"
+                    />
+
+
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/buttons_SignIn"
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone"
+                >
+
+                <!--
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/btn_fb_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                -->
+
+                <Button
+                    android:id="@+id/button_fb_signIn"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sign Up with Facebook"
+                    style="@style/com_facebook_button"
+                    />
+                <Button
+                    android:id="@+id/button_email_SignIn"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="90dp"
+                    android:text="Sign Up with Email"
+                    style="@style/com_facebook_button"
+                    android:background="@color/colorPrimaryLight"
+                    />
+
+
+            </FrameLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
