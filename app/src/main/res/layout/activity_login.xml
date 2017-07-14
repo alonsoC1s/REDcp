@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:text="Redcupa"
         android:textColor="#ffffff"
         android:textSize="40dp"
@@ -33,7 +33,7 @@
 
     <RelativeLayout
         android:layout_below="@id/textView2"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="215dp"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="250dp">
@@ -45,24 +45,29 @@
             >
 
             <LinearLayout
+                android:id="@+id/login_buttons_container"
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
                 <Button
+                    android:id="@+id/btn_signUp"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="Sign Up"
                     android:textAllCaps="false"
                     android:textSize="20dp"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:onClick="showSignUpButtons"
                     />
 
                 <Button
+                    android:id="@+id/btn_logIn"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="Log In"
                     android:textAllCaps="false"
                     android:textSize="20dp"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:onClick="showLogInButtons"
                     />
 
             </LinearLayout>
@@ -89,6 +94,7 @@
                     android:layout_gravity="center_horizontal"
                     android:text="Sign Up with Facebook"
                     style="@style/com_facebook_button"
+                    android:onClick="initFBlogin"
                     />
                 <Button
                     android:id="@+id/button_email_SignUp"
@@ -104,7 +110,7 @@
 
             </FrameLayout>
             <FrameLayout
-                android:id="@+id/buttons_SignIn"
+                android:id="@+id/buttons_LogIn"
                 android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -120,21 +126,21 @@
                 -->
 
                 <Button
-                    android:id="@+id/button_fb_signIn"
+                    android:id="@+id/button_fb_LogIn"
                     android:layout_marginTop="20dp"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Sign Up with Facebook"
+                    android:text="Log In with Facebook"
                     style="@style/com_facebook_button"
                     />
                 <Button
-                    android:id="@+id/button_email_SignIn"
+                    android:id="@+id/button_email_LogIn"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="90dp"
-                    android:text="Sign Up with Email"
+                    android:text="Log In with Email"
                     style="@style/com_facebook_button"
                     android:background="@color/colorPrimaryLight"
                     />

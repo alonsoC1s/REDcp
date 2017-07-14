@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -20,6 +24,7 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +40,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Arrays;
+import java.util.List;
+
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
@@ -45,15 +53,25 @@ public class LoginActivity extends AppCompatActivity {
 
     Profile fbProfile;
 
+    Boolean firstLogin = true;
+    Button signUpSelector;
+    Button logInSelector;
+    Button FBsignUp;
+    Button FBlogIn;
+    Button emailSignUp;
+    Button emailLogIn;
+    FrameLayout signUpButtons;
+    FrameLayout logInButtons;
+
     //Declaring FB components
-    private LoginButton loginButton;
     private CallbackManager callbackManager;
-    private ProfileTracker mProfileTracker;
+    ProfileTracker mProfileTracker;
 
     //Declaring Firebase components
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,17 +89,24 @@ public class LoginActivity extends AppCompatActivity {
         //Get reference to FB login button and assign callback manager to it
         callbackManager = CallbackManager.Factory.create();
 
-        //loginButton = (LoginButton)findViewById(R.id.btn_fb_login);
-        //loginButton.setReadPermissions("public_profile","user_birthday");
+        //UI Components
+        signUpSelector = (Button) findViewById(R.id.btn_signUp);
+        logInSelector = (Button) findViewById(R.id.btn_logIn);
+        FBlogIn = (Button) findViewById(R.id.button_fb_LogIn);
+        FBsignUp = (Button) findViewById(R.id.button_fb_signUp);
+        emailLogIn = (Button)findViewById(R.id.button_email_LogIn);
+        emailSignUp = (Button) findViewById(R.id.button_email_SignUp);
+        signUpButtons = (FrameLayout) findViewById(R.id.buttons_SignUp);
+        logInButtons = (FrameLayout) findViewById(R.id.buttons_LogIn);
 
-        //Adding a callback manager to the Facebook login button
-        /*
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG,"User logged in to facebook successfully");
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
+
             @Override
             public void onCancel() {
                 Log.i(TAG,"User Cancelled login to Facebook operation.");
@@ -95,9 +120,6 @@ public class LoginActivity extends AppCompatActivity {
                         .show();
             }
         });
-        */
-
-
 
         mProfileTracker = new ProfileTracker() {
             @Override
@@ -118,13 +140,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null ){
-                    Log.i(TAG,"Login to Firebase was successful");
-
-                    write_new_user(user.getUid());
-
-                    Toast.makeText(getApplicationContext(),R.string.login_was_successfull,Toast.LENGTH_LONG)
-                            .show();
+                if (user != null && firstLogin ){
+                    Log.i(TAG,"Login to Firebase was successful. Redirecting to Sign up activity");
+                    goUserCreationScreen(user.getUid());
+                }else if (user != null && !firstLogin ){
                     goMainScreen();
                 }
             }
@@ -145,8 +164,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void goMainScreen() {
-        Intent intent = new Intent(this, NavActivity.class);
+    private void goUserCreationScreen(String userID) {
+        Intent intent = new Intent(this, UserCreationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Bundle userData = new Bundle();
+        userData.putString("first_name",fbProfile.getFirstName());
+        userData.putString("last_name",fbProfile.getLastName());
+        userData.putString("facebook_id",fbProfile.getId());
+        userData.putString("firebase_id",userID);
+        intent.putExtras(userData);
+
+        startActivity(intent);
+    }
+
+    private void goMainScreen(){
+        Intent intent = new Intent(this,NavActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -176,6 +208,22 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStop(){
         super.onStop();
         firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+    }
+
+    public void initFBlogin(View view){
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","user_birthday"));
+    }
+
+    public void showSignUpButtons(View view){
+        logInButtons.setVisibility(View.GONE);
+        signUpButtons.setVisibility(View.VISIBLE);
+        firstLogin = true;
+    }
+
+    public void showLogInButtons(View view){
+        logInButtons.setVisibility(View.VISIBLE);
+        signUpButtons.setVisibility(View.GONE);
+        firstLogin = false;
     }
 
 }
