@@ -59,9 +59,11 @@
             android:name=".ProfileDetailsActivity"
             android:label="@string/title_activity_event_details"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".UserCreationActivity"
-            android:label="@string/title_activity_user_creation"></activity>
+        <activity android:name=".UserCreationActivity"
+            android:label="Sign Up"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
     </application>
 
 </manifest>

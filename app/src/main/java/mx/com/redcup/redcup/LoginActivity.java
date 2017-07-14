@@ -172,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         userData.putString("last_name",fbProfile.getLastName());
         userData.putString("facebook_id",fbProfile.getId());
         userData.putString("firebase_id",userID);
+        userData.putBoolean("facebook_user",true);
         intent.putExtras(userData);
 
         startActivity(intent);
