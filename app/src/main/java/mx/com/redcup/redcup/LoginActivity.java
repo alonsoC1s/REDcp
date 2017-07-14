@@ -184,14 +184,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void write_new_user(String userID){
-
-        MyUsers newUser = new MyUsers(userID,fbProfile.getFirstName(),fbProfile.getLastName(),fbProfile.getId());
-
-        //Push to Firebase
-        mDatabaseRef.child("Users_parent").child(userID).setValue(newUser);
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){

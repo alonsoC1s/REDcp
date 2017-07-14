@@ -31,6 +31,7 @@
                 />
 
             <android.support.v7.widget.Toolbar
+                android:title="Sign Up"
                 android:id="@+id/toolbar_profileDetails"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"

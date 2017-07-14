@@ -72,7 +72,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
         mEventContent.setText(content);
     }
 
-    public void setProfilePic(String uID){
+    public void setProfilePic(final String uID){
         mDatabase.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,7 +80,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
 
                 Glide.with(itemView.getContext()).using(new FirebaseImageLoader())
                         .load(mStorage.child(user.getFirebaseUID()).child("profile_picture"))
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(mProfilePic);
+                        .signature(new StringSignature(uID)).into(mProfilePic);
 
             }
             @Override
