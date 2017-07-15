@@ -17,10 +17,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -39,16 +43,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
+import mx.com.redcup.redcup.EventDetailsActivity;
 import mx.com.redcup.redcup.NewPostActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
+import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -56,13 +64,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     String TAG = "MapsFragment";
 
     static GoogleMap googleMap_fragment;
+
     DatabaseReference mDataBase_events;
+    DatabaseReference mDataBase_users;
+    StorageReference mStor;
 
     FloatingActionButton fabNewEvent;
     BottomSheetBehavior bottomSheetBehavior;
     TextView bottomSheetTitle;
     TextView bottomSheetContent;
     FrameLayout eventNamecontainer;
+    ImageView cardAuthorPic;
+    TextView cardAuthorName;
+    Button gotoEventDetails;
 
     LatLng mDefaultLocation = new LatLng(0, 0);
     Location mCurrentLocation;
@@ -72,7 +86,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     String currentMarkerEventName;
 
     //Create custom listners
-    View.OnClickListener clickExpanded = new View.OnClickListener() {
+    View.OnClickListener fabClickExpanded = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -92,7 +106,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    View.OnClickListener clickCollapsed = new View.OnClickListener() {
+    View.OnClickListener fabClickCollapsed = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             //Open the google place picker
@@ -109,29 +123,39 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
+    View.OnClickListener startEventDetails = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
+            intent.putExtra("event_id",currentMarkerEventID);
+            getActivity().startActivity(intent);
+        }
+    };
+
     BottomSheetBehavior.BottomSheetCallback bottomFragmentCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
 
             switch (newState){
                 case BottomSheetBehavior.STATE_DRAGGING:
-                    fabNewEvent.setOnClickListener(clickExpanded);
+                    fabNewEvent.setOnClickListener(fabClickExpanded);
                     fabNewEvent.setImageResource(R.drawable.ic_attend);
 
                     eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     bottomSheetTitle.setTextColor(getResources().getColor(R.color.white));
 
                     getEventDataOnMarkerClick(currentMarkerEventID);
+
                     break;
                 case BottomSheetBehavior.STATE_COLLAPSED:
-                    fabNewEvent.setOnClickListener(clickCollapsed);
+                    fabNewEvent.setOnClickListener(fabClickCollapsed);
                     fabNewEvent.setImageResource(R.drawable.button_add);
 
                     eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.white));
                     bottomSheetTitle.setTextColor(getResources().getColor(R.color.black));
                     break;
                 case BottomSheetBehavior.STATE_HIDDEN:
-                    fabNewEvent.setOnClickListener(clickCollapsed);
+                    fabNewEvent.setOnClickListener(fabClickCollapsed);
                     fabNewEvent.setImageResource(R.drawable.button_add);
 
                     eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.white));
@@ -149,6 +173,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         //Init firebase database
         mDataBase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+        mDataBase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
+        mStor = FirebaseStorage.getInstance().getReference();
 
         //Get UI Elements
         fabNewEvent = (FloatingActionButton) view.findViewById(R.id.fab_create_event);
@@ -156,10 +182,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         bottomSheetTitle = (TextView) view.findViewById(R.id.tv_modalsheet_title);
         bottomSheetContent = (TextView) view.findViewById(R.id.tv_modalsheet_content);
         eventNamecontainer = (FrameLayout) view.findViewById(R.id.header_container);
+        cardAuthorPic = (ImageView) view.findViewById(R.id.card_authorPic);
+        cardAuthorName = (TextView) view.findViewById(R.id.card_authorName);
+        gotoEventDetails = (Button) view.findViewById(R.id.btn_goto_eventdetails);
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setBottomSheetCallback(bottomFragmentCallback);
-        fabNewEvent.setOnClickListener(clickCollapsed);
+        fabNewEvent.setOnClickListener(fabClickCollapsed);
+        gotoEventDetails.setOnClickListener(startEventDetails);
 
 
         return view;
@@ -267,17 +297,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    public void getEventDataOnMarkerClick(String eventId){
+    public void getEventDataOnMarkerClick(final String eventId){
         mDataBase_events.child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyEvents newEvent = dataSnapshot.getValue(MyEvents.class);
                 bottomSheetContent.setText(newEvent.getEventContent());
-
+                getAuthorDataOnMarkerClick(newEvent.getUserID());
 
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getAuthorDataOnMarkerClick(final String authorUID){
+        mDataBase_users.child(authorUID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                MyUsers newUser = dataSnapshot.getValue(MyUsers.class);
+                cardAuthorName.setText(newUser.getDisplayName());
+                Glide.with(getActivity()).using(new FirebaseImageLoader()).load(mStor.child(authorUID).child("profile_picture"))
+                        .signature(new StringSignature(authorUID)).into(cardAuthorPic);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
