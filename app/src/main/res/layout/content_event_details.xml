@@ -12,7 +12,77 @@
     android:padding="5dp"
     >
 
+    <FrameLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <android.support.v7.widget.CardView
+            android:elevation="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:id="@+id/tv_eventdetails_userpic"
+                    android:layout_margin="20dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_eventDetails_userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/tv_eventdetails_userpic"
+                    android:paddingLeft="10dp"
+                    android:textSize="30sp"
+                    android:maxWidth="150dp"
+                    android:maxHeight="80dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_display_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/tv_eventDetails_userName"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_EventDetails_event_contentn"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_eventdetails_userpic"
+                        android:textSize="20sp"
+                        android:layout_margin="@dimen/text_margin"
+                        tools:layout_editor_absoluteX="15dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+
+
+    <!--
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -73,5 +143,7 @@
     </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
+
+    -->
 
 </android.support.v4.widget.NestedScrollView>
