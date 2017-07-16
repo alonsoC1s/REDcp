@@ -36,7 +36,7 @@
                     android:layout_width="85dp"
                     android:layout_height="85dp"
                     android:id="@+id/tv_eventdetails_userpic"
-                    android:layout_margin="20dp"
+                    android:layout_margin="8dp"
                     />
 
                 <TextView
@@ -46,7 +46,7 @@
                     app:layout_constraintStart_toEndOf="@id/tv_eventdetails_userpic"
                     android:paddingLeft="10dp"
                     android:textSize="30sp"
-                    android:maxWidth="150dp"
+                    android:maxWidth="130dp"
                     android:maxHeight="80dp"
                     />
 
@@ -75,75 +75,42 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:paddingLeft="20dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:background="@drawable/ic_favorite_black_24dp"
+
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                    <Button
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/ic_share_black_24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                    <Button
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/ic_person_add"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                    <Button
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/ic_more_vert"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
     </FrameLayout>
 
-
-    <!--
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="20dp"
-        android:paddingLeft="10dp"
-        >
-
-
-
-        <ImageView
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:id="@+id/tv_eventdetails_userpic"
-            android:layout_margin="20dp"
-            tools:layout_editor_absoluteY="200dp"
-            tools:layout_editor_absoluteX="15dp" />
-
-
-        <TextView
-            android:id="@+id/tv_eventDetails_userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/tv_eventdetails_userpic"
-            android:paddingLeft="10dp"
-            android:textSize="30sp"
-            android:maxWidth="150dp"
-            android:maxHeight="80dp"
-            tools:layout_editor_absoluteY="200dp"
-            tools:layout_editor_absoluteX="100dp" />
-
-        <TextView
-            android:id="@+id/tv_display_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/tv_eventDetails_userName"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            tools:layout_editor_absoluteY="200dp"
-            tools:layout_editor_absoluteX="120dp" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_EventDetails_event_contentn"
-            app:layout_constraintTop_toBottomOf="@+id/tv_eventdetails_userpic"
-            android:textSize="20sp"
-            android:layout_margin="@dimen/text_margin"
-            tools:layout_editor_absoluteX="15dp" />
-
-
-
-
-    </android.support.constraint.ConstraintLayout>
-
-    </android.support.v7.widget.CardView>
-
-    -->
 
 </android.support.v4.widget.NestedScrollView>
