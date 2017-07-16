@@ -1,16 +1,17 @@
 package mx.com.redcup.redcup.MyHolders;
 
 import android.content.Context;
-import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
-import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,59 +21,48 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import mx.com.redcup.redcup.EventDetailsActivity;
-import mx.com.redcup.redcup.LoginActivity;
-import mx.com.redcup.redcup.NavActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
-import static java.security.AccessController.getContext;
 
-
-public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
-    private final TextView mEventName;
-    private final TextView mEventContent;
-    private final ImageView mProfilePic;
+public class CommentsRecyclerHolder extends RecyclerView.ViewHolder {
+    private final TextView commentContent;
+    private final ImageView commentAuthorPic;
     public String eventID;
+    LinearLayout commentContainer;
 
-    CardView mCard;
 
     private Context context;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
 
-    public EventsRecyclerHolder(View itemView) {
+    public CommentsRecyclerHolder(View itemView) {
         super(itemView);
-        mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
-        mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
-        mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
-        mCard = (CardView) itemView.findViewById(R.id.card_view);
+        commentContent = (TextView) itemView.findViewById(R.id.tv_comment_content);
+        commentAuthorPic = (ImageView) itemView.findViewById(R.id.iv_comment_authorpic);
+        commentContainer = (LinearLayout) itemView.findViewById(R.id.comment_container);
 
-        context = itemView.getContext();
-
-        mCard.setClickable(true);
-        mCard.setOnClickListener(new View.OnClickListener() {
+        commentContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context,EventDetailsActivity.class);
-                intent.putExtra("event_id",eventID);
-                context.startActivity(intent);
+            public boolean onLongClick(View v) {
+                Snackbar.make(v,"Soon you will be able to delete your own comments", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
 
+        context = itemView.getContext();
+
+
     }
 
 
-    public void setTitle(String title){
-        mEventName.setText(title);
-    }
 
     public void setContent(String content){
-        mEventContent.setText(content);
+        commentContent.setText(content);
     }
 
-    public void setProfilePic(final String uID){
+    public void setAuthorPic(final String uID){
         mDatabase.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,7 +70,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
 
                 Glide.with(context).using(new FirebaseImageLoader())
                         .load(mStorage.child(user.getFirebaseUID()).child("profile_picture"))
-                        .signature(new StringSignature(uID)).into(mProfilePic);
+                        .signature(new StringSignature(uID)).into(commentAuthorPic);
 
             }
             @Override

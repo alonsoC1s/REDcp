@@ -89,7 +89,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     View.OnClickListener fabClickExpanded = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             DatabaseReference attendance_listRef = mDataBase_events.child(currentMarkerEventID).child("attendance_list");
             String userUid = getCurrentFirebaseUID();
 
@@ -102,7 +101,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             //Toast.makeText(getApplicationContext(),(userUid+" was added to "+postID),Toast.LENGTH_LONG).show();
             Snackbar.make(v,String.format("You are now in %s attendance list", currentMarkerEventName),Snackbar.LENGTH_SHORT).show();
-
         }
     };
 
@@ -188,6 +186,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setBottomSheetCallback(bottomFragmentCallback);
+
         fabNewEvent.setOnClickListener(fabClickCollapsed);
         gotoEventDetails.setOnClickListener(startEventDetails);
 

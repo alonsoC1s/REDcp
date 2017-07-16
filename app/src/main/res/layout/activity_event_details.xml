@@ -34,13 +34,42 @@
 
     <include layout="@layout/content_event_details" />
 
+    <LinearLayout
+        android:background="@color/white"
+        android:paddingLeft="8dp"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_eventdetails_commentfield"
+            android:layout_weight="1"
+            android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+            android:imeOptions="actionSend"
+            android:maxLines="4"
+            android:gravity="left"
+            android:textSize="15dp"
+            android:hint="Add a comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_eventdetails_sendcomment"
+            android:gravity="right"
+            android:background="@drawable/ic_send_blue"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+    </LinearLayout>
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fam_attendance_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         app:menu_openDirection="up"
-        android:layout_margin="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="22dp"
         app:menu_colorNormal="@color/colorAccent"
         app:menu_colorPressed="@color/colorAccentLight"
         >
@@ -75,6 +104,7 @@
             />
 
     </com.github.clans.fab.FloatingActionMenu>
+
 
 </android.support.design.widget.CoordinatorLayout>
 

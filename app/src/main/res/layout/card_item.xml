@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         app:cardCornerRadius="6dp"
-        app:elevation="0dp"
+        app:elevation="2dp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
 
@@ -41,7 +41,7 @@
                 android:paddingLeft="10dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="#000000"
+                android:textColor="@color/black"
                 android:textSize="25dp">
 
             </TextView>

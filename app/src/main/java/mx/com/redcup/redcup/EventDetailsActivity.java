@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.facebook.login.widget.ProfilePictureView;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +42,10 @@ import io.nlopez.smartlocation.OnGeofencingTransitionListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
 import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
+import mx.com.redcup.redcup.MyHolders.CommentsRecyclerHolder;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
+import mx.com.redcup.redcup.myDataModels.InviteStatus;
+import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
@@ -57,6 +65,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     Button shareEvent;
     Button inviteFriend;
     Button menuMore;
+    RecyclerView commentsRecyclerView;
+    EditText commentInputField;
+    Button commentSendButton;
 
     CollapsingToolbarLayout toolbarTitle;
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
@@ -101,6 +112,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         shareEvent = (Button) findViewById(R.id.btn_eventdetails_share);
         inviteFriend = (Button) findViewById(R.id.btn_eventdetails_invite);
         menuMore = (Button) findViewById(R.id.btn_eventdetails_more);
+        commentInputField = (EditText) findViewById(R.id.et_eventdetails_commentfield);
+        commentSendButton = (Button) findViewById(R.id.btn_eventdetails_sendcomment);
+        commentsRecyclerView = (RecyclerView) findViewById(R.id.rv_eventdetails_comments);
 
 
         //Set onClick listeners for the FABs to log the user as whatever status they chose.
@@ -144,6 +158,13 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 openMoreMenu(postID,v);
             }
         });
+        commentSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = commentInputField.getText().toString();
+                postNewComment(postID,content,v);
+            }
+        });
 
 
         authorPic.setOnClickListener(openProfileDetails);
@@ -151,18 +172,34 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         //Fill the fields for event name, profile picture, etc
         populateActivityData(postID);
 
+        commentsRecyclerView.setHasFixedSize(false);
+
+        DatabaseReference comments_ref = mDatabase_events.child(postID).child("event_comments");
+        RecyclerView.Adapter commentAdapter = new FirebaseRecyclerAdapter<MyEventComments,CommentsRecyclerHolder>(MyEventComments.class,
+                R.layout.comments_recyclerview, CommentsRecyclerHolder.class,comments_ref ) {
+            @Override
+            protected void populateViewHolder(CommentsRecyclerHolder viewHolder, MyEventComments comment, int position) {
+                Log.e("Comment",comment.getCommentContent());
+                viewHolder.setContent(comment.getCommentContent());
+                viewHolder.setAuthorPic(comment.getAuthorUID());
+            }
+        };
+        commentsRecyclerView.setAdapter(commentAdapter);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        commentsRecyclerView.setLayoutManager(llm);
+
 
     }
 
     public void confirmUserAttendance(String postID,View view){
         //Get the postId, and add the userID to the list of attendees
-        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("invitee_list");
         String userUid = getCurrentFirebaseUID();
 
-        Map<String, Object> attendanceUpdate = new HashMap<>();
-        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_CONFIRMED);
+        Map<String, Object> inviteUpdate = new HashMap<>();
+        inviteUpdate.put(userUid, InviteStatus.INVITE_ACCEPTED);
 
-        attendance_listRef.updateChildren(attendanceUpdate);
+        attendance_listRef.updateChildren(inviteUpdate);
 
         activateGeofence(postID);
 
@@ -170,22 +207,22 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     }
 
     public void declineInvitation(String postID, View view){
-        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("invitee_list");
         String userUid = getCurrentFirebaseUID();
         Map<String, Object> attendanceUpdate = new HashMap<>();
-        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_DECLINED);
+        attendanceUpdate.put(userUid, InviteStatus.INVITE_DECLINED);
 
         attendance_listRef.updateChildren(attendanceUpdate);
 
-        Snackbar.make(view,"You declined invitation to this event",Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(view,"You declined your invitation to this event",Snackbar.LENGTH_SHORT).show();
     }
 
     public void markAttendanceUncertain(String postID, View view){
-        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("attendance_list");
+        DatabaseReference attendance_listRef = mDatabase_events.child(postID).child("invitee_list");
         String userUid = getCurrentFirebaseUID();
 
         Map<String, Object> attendanceUpdate = new HashMap<>();
-        attendanceUpdate.put(userUid,AttendanceStatus.ATTENDANCE_UNCERTAIN);
+        attendanceUpdate.put(userUid,InviteStatus.INVITE_UNCERTAIN);
 
         attendance_listRef.updateChildren(attendanceUpdate);
 
@@ -195,11 +232,18 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public void faveThisEvent(String postID, View view){
         //TODO: Create a new property of events class, which will hold ratings or likes (undecided) and then increment said value here
         Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+
     }
 
     public void shareThisEvent(String postID, View view){
         //TODO: Implement dynamic links, and then prompt a modal bottom fragment to share;
-        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     public void inviteFriend(String postID, View view){
@@ -210,6 +254,24 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public void openMoreMenu(String postID, View view){
         //TODO: Show thing to let the user delete the post only if they are the author
         Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void postNewComment(String postID, String commentContent, View view){
+        if (TextUtils.isEmpty(commentContent)){
+            commentInputField.setError("Required");
+        } else{
+            DatabaseReference comments_Ref = mDatabase_events.child(postID).child("event_comments");
+            String pushID = comments_Ref.push().getKey();
+
+            MyEventComments newComment = new MyEventComments(commentContent,getCurrentFirebaseUID());
+
+            Map<String, Object> commentUpdate = new HashMap<>();
+            commentUpdate.put(pushID, newComment);
+
+            comments_Ref.updateChildren(commentUpdate);
+            commentInputField.setText("");
+            Snackbar.make(view,"Comment posted",Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     public void activateGeofence(String postID){
@@ -249,6 +311,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 MyEvents event = dataSnapshot.getValue(MyEvents.class);
 
                 authorUserID = event.getUserID();
+                currentEventLat = event.getEventLatitude();
+                currentEventLng = event.getEventLongitude();
 
                 postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(event.getEventName());

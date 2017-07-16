@@ -8,9 +8,9 @@ android {
         applicationId "mx.com.redcup.redcup"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 3
+        versionCode 4
 
-        versionName "1.11"
+        versionName "1.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
