@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,10 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     TextView authorName;
     ImageView authorPic;
     TextView displayTime;
+    Button faveEvent;
+    Button shareEvent;
+    Button inviteFriend;
+    Button menuMore;
 
     CollapsingToolbarLayout toolbarTitle;
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
@@ -92,30 +97,54 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         authorName = (TextView) findViewById(R.id.tv_eventDetails_userName);
         authorPic = (ImageView) findViewById(R.id.tv_eventdetails_userpic);
         displayTime = (TextView) findViewById(R.id.tv_display_time);
+        faveEvent = (Button) findViewById(R.id.btn_eventdetails_fav);
+        shareEvent = (Button) findViewById(R.id.btn_eventdetails_share);
+        inviteFriend = (Button) findViewById(R.id.btn_eventdetails_invite);
+        menuMore = (Button) findViewById(R.id.btn_eventdetails_more);
 
 
         //Set onClick listeners for the FABs to log the user as whatever status they chose.
         //TODO Add a function to write new post to their profiles saying they changed their attendace status to <insert status>
         fabConfirmAttendance.setOnClickListener(new View.OnClickListener() { //User checked as attending
             @Override
-            public void onClick(View view) {
-                confirmUserAttendance(postID,view);
+            public void onClick(View view) {confirmUserAttendance(postID,view);
             }
         });
-
         fabDeclineAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not attending
             @Override
-            public void onClick(View view) {
-               declineInvitation(postID,view);
+            public void onClick(View view) {declineInvitation(postID,view);
+            }
+        });
+        fabMaybeAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not sure if attending
+            @Override
+            public void onClick(View view) {markAttendanceUncertain(postID,view);
+            }
+        });
+        faveEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                faveThisEvent(postID,v);
+            }
+        });
+        shareEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareThisEvent(postID,v);
+            }
+        });
+        inviteFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inviteFriend(postID,v);
+            }
+        });
+        menuMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMoreMenu(postID,v);
             }
         });
 
-        fabMaybeAttendance.setOnClickListener(new View.OnClickListener() {//User checked as not sure if attending
-            @Override
-            public void onClick(View view) {
-             markAttendanceUncertain(postID,view);
-            }
-        });
 
         authorPic.setOnClickListener(openProfileDetails);
 
@@ -161,6 +190,26 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         attendance_listRef.updateChildren(attendanceUpdate);
 
         Snackbar.make(view,"You marked your attendance as uncertain",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void faveThisEvent(String postID, View view){
+        //TODO: Create a new property of events class, which will hold ratings or likes (undecided) and then increment said value here
+        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void shareThisEvent(String postID, View view){
+        //TODO: Implement dynamic links, and then prompt a modal bottom fragment to share;
+        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void inviteFriend(String postID, View view){
+        //TODO: Promopt bottom modal fragment and show autocomplete list of user's friends, then send a notification to invitee
+        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void openMoreMenu(String postID, View view){
+        //TODO: Show thing to let the user delete the post only if they are the author
+        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
     }
 
     public void activateGeofence(String postID){
@@ -213,7 +262,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             }
         });
     }
-
 
     @Override
     public void onGeofenceTransition(TransitionGeofence transitionGeofence) {
