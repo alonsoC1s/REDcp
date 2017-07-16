@@ -24,6 +24,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -70,6 +71,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     Button commentSendButton;
 
     CollapsingToolbarLayout toolbarTitle;
+    FloatingActionButton floatingMenu;
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
     com.github.clans.fab.FloatingActionButton fabDeclineAttendance;
     com.github.clans.fab.FloatingActionButton fabMaybeAttendance;
@@ -102,6 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         //Get handle of UI elements
         postContent = (TextView) findViewById(R.id.tv_EventDetails_event_contentn);
         toolbarTitle = (CollapsingToolbarLayout) findViewById(R.id.ct_eventdetails_title);
+        floatingMenu = (FloatingActionButton) findViewById(R.id.fam_attendance_status);
         fabConfirmAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_confirm);
         fabDeclineAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_decline);
         fabMaybeAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_maybe);
@@ -163,6 +166,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             public void onClick(View v) {
                 String content = commentInputField.getText().toString();
                 postNewComment(postID,content,v);
+            }
+        });
+        commentInputField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {floatingMenu.setVisibility(View.GONE);
             }
         });
 
@@ -270,6 +278,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
             comments_Ref.updateChildren(commentUpdate);
             commentInputField.setText("");
+            floatingMenu.setVisibility(View.VISIBLE);
             Snackbar.make(view,"Comment posted",Snackbar.LENGTH_SHORT).show();
         }
     }
