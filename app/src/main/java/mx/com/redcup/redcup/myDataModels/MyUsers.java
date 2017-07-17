@@ -32,6 +32,13 @@ public class MyUsers {
         this.level = 0;
     }
 
+    public MyUsers(String userID,String firstName, String secondName){
+        this.userID = userID;
+        this.displayName = firstName;
+        this.displaySecondName = secondName;
+        this.level = 0;
+    }
+
 
     public String getDisplayName() {return (displayName + " " + displaySecondName);}
     ////

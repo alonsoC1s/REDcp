@@ -82,10 +82,14 @@ public class NavActivity extends AppCompatActivity {
 
 
         //Checking if the user is logged in. Else, send him to LoginScreen
-        if (AccessToken.getCurrentAccessToken() == null) {
-            Log.i(TAG, "Facebook access token is null. User is not logged in. Redirecting user to LoginActivity");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Log.e(TAG, "User is not logged in. Redirecting to LoginActivity");
             goLoginScreen();
         }
+
+
+
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

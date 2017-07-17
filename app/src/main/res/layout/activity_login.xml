@@ -105,6 +105,7 @@
                     android:text="Sign Up with Email"
                     style="@style/com_facebook_button"
                     android:background="@color/colorPrimaryLight"
+                    android:onClick="showEmailSignUp"
                     />
 
 
@@ -133,6 +134,7 @@
                     android:layout_gravity="center_horizontal"
                     android:text="Log In with Facebook"
                     style="@style/com_facebook_button"
+                    android:onClick="initFBlogin"
                     />
                 <Button
                     android:id="@+id/button_email_LogIn"
@@ -143,6 +145,7 @@
                     android:text="Log In with Email"
                     style="@style/com_facebook_button"
                     android:background="@color/colorPrimaryLight"
+                    android:onClick="showEmailSignUp"
                     />
 
 

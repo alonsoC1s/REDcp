@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
@@ -43,6 +44,9 @@ public class UserCreationActivity extends AppCompatActivity {
 
     Boolean facebookUser;
     String facebookID;
+
+    String userEmail;
+    String userPassword;
 
     View.OnClickListener coverImagePickerBuilder = new View.OnClickListener() {
         @Override
@@ -79,7 +83,7 @@ public class UserCreationActivity extends AppCompatActivity {
                 write_new_user_fb(getCurrentFirebaseUID(),userName,userLastName,facebookID, v);
                 goMainScreen();
             }else {
-                write_new_user_email();
+                write_new_user_email(getCurrentFirebaseUID(),userName,userLastName,v);
                 goMainScreen();
             }
         }
@@ -90,7 +94,6 @@ public class UserCreationActivity extends AppCompatActivity {
 
         Bundle userInfo = getIntent().getExtras();
         facebookUser = userInfo.getBoolean("facebook_user");
-        facebookID = userInfo.getString("facebook_id");
 
         userNameField = (EditText)findViewById(R.id.et_username);
         userLastNameField = (EditText)findViewById(R.id.et_userLastname);
@@ -102,12 +105,16 @@ public class UserCreationActivity extends AppCompatActivity {
 
         if (facebookUser){
             passwordContainer.setVisibility(View.GONE);
+            facebookID = userInfo.getString("facebook_id");
             String userName = userInfo.getString("first_name");
             String userLastName = userInfo.getString("last_name");
 
             userNameField.setText(userName);
             userLastNameField.setText(userLastName);
 
+        }else {
+            passwordContainer.setVisibility(View.GONE);
+            userEmail = userInfo.getString("email");
         }
 
         mStorageRef.child(getCurrentFirebaseUID());
@@ -118,8 +125,6 @@ public class UserCreationActivity extends AppCompatActivity {
     }
 
     private void write_new_user_fb(String userID,String userName, String userLastName, String facebookID, View v){
-
-
         MyUsers newUser = new MyUsers(userID,userName,userLastName,facebookID);
 
         //Push to Firebase
@@ -129,7 +134,13 @@ public class UserCreationActivity extends AppCompatActivity {
 
     }
 
-    private void write_new_user_email(){
+    private void write_new_user_email(String userID,String userName, String userLastName, View v){
+        MyUsers newUser = new MyUsers(userID,userName,userLastName);
+
+        //Push to Firebase
+        mDatabaseRef.child(userID).setValue(newUser);
+
+        Snackbar.make(v,String.format("Welcome to Redcupa %s !!", userName),Snackbar.LENGTH_LONG).show();
 
     }
 

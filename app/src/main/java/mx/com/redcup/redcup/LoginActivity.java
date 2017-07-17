@@ -1,5 +1,6 @@
 package mx.com.redcup.redcup;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,8 +36,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
     Profile fbProfile;
 
     Boolean firstLogin = true;
+    String email;
+    String emailPassword;
+
     Button signUpSelector;
     Button logInSelector;
     Button FBsignUp;
@@ -63,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
     FrameLayout signUpButtons;
     FrameLayout logInButtons;
 
+    Boolean isFacebookUser;
+
     //Declaring FB components
     private CallbackManager callbackManager;
     ProfileTracker mProfileTracker;
@@ -70,7 +80,21 @@ public class LoginActivity extends AppCompatActivity {
     //Declaring Firebase components
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-    DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users_parent");
+
+    ValueEventListener checkIfName = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (!dataSnapshot.hasChild("displayName")) {
+                firstLogin = true;
+            }
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Toast.makeText(getApplicationContext(),"Are you new to Redcupa? We are creating a new user for you", Toast.LENGTH_LONG).show();
+            firstLogin = true;
+        }
+    };
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +122,8 @@ public class LoginActivity extends AppCompatActivity {
         emailSignUp = (Button) findViewById(R.id.button_email_SignUp);
         signUpButtons = (FrameLayout) findViewById(R.id.buttons_SignUp);
         logInButtons = (FrameLayout) findViewById(R.id.buttons_LogIn);
+
+        isFacebookUser = false;
 
 
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -140,14 +166,23 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null && firstLogin ){
+                mDatabaseRef.child(user.getUid()).addListenerForSingleValueEvent(checkIfName);
+
+                if (user != null) {
                     Log.i(TAG,"Login to Firebase was successful. Redirecting to Sign up activity");
-                    goUserCreationScreen(user.getUid());
-                }else if (user != null && !firstLogin ){
-                    goMainScreen();
+                    if (firstLogin) {
+                        if (isFacebookUser){
+                            goUserCreationScreen(user.getUid(),true);
+                        }else{
+                            goUserCreationScreen(user.getUid(),false);
+                        }
+                    } else{
+                        goMainScreen();
+                    }
                 }
             }
         };
+
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
@@ -164,17 +199,24 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void goUserCreationScreen(String userID) {
+    private void goUserCreationScreen(String userID, Boolean isFacebookUser) {
         Intent intent = new Intent(this, UserCreationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        Bundle userData = new Bundle();
-        userData.putString("first_name",fbProfile.getFirstName());
-        userData.putString("last_name",fbProfile.getLastName());
-        userData.putString("facebook_id",fbProfile.getId());
-        userData.putString("firebase_id",userID);
-        userData.putBoolean("facebook_user",true);
-        intent.putExtras(userData);
 
+        Bundle userData = new Bundle();
+        userData.putBoolean("facebook_user", isFacebookUser);
+
+        if (isFacebookUser) {
+            userData.putString("first_name", fbProfile.getFirstName());
+            userData.putString("last_name", fbProfile.getLastName());
+            userData.putString("facebook_id", fbProfile.getId());
+            userData.putString("firebase_id", userID);
+            intent.putExtras(userData);
+        }else {
+            userData.putString("email",email);
+            userData.putString("password",emailPassword);
+            intent.putExtras(userData);
+        }
         startActivity(intent);
     }
 
@@ -205,6 +247,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void initFBlogin(View view){
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","user_birthday"));
+        isFacebookUser = true;
     }
 
     public void showSignUpButtons(View view){
@@ -217,6 +260,58 @@ public class LoginActivity extends AppCompatActivity {
         logInButtons.setVisibility(View.VISIBLE);
         signUpButtons.setVisibility(View.GONE);
         firstLogin = false;
+    }
+
+    public void showEmailSignUp(View view){
+        isFacebookUser = false;
+        Dialog loginDialog = new Dialog(this);
+        loginDialog.setContentView(R.layout.email_login_dialog);
+
+        final EditText emailField;
+        final EditText passwordField;
+        final Button continueButton;
+
+        //Get UI elements
+        emailField = (EditText) loginDialog.findViewById(R.id.et_dialog_email);
+        passwordField = (EditText) loginDialog.findViewById(R.id.et_dialog_password);
+        continueButton = (Button) loginDialog.findViewById(R.id.btn_dialog_continue);
+
+        loginDialog.show();
+
+
+
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String inputEmail = emailField.getText().toString();
+                final String inputPassword = passwordField.getText().toString();
+
+                if (firstLogin) {
+                    firebaseAuth.createUserWithEmailAndPassword(inputEmail, inputPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.i("UserCreationAnonymous", "User successfully created with email. Redirecting");
+                            email = inputEmail;
+                            emailPassword = inputPassword;
+                        }
+                    });
+                }else {
+                    firebaseAuth.signInWithEmailAndPassword(inputEmail,inputPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                goMainScreen();
+                            }else {
+                                Toast.makeText(getApplicationContext(),"Are you new to Redcupa? We are creating a new user for you", Toast.LENGTH_LONG).show();
+                                firstLogin = true;
+                                continueButton.callOnClick();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
 }
