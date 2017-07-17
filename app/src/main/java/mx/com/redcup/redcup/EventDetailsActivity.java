@@ -25,6 +25,7 @@ import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +72,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     Button commentSendButton;
 
     CollapsingToolbarLayout toolbarTitle;
-    FloatingActionButton floatingMenu;
+    FloatingActionMenu floatingMenu;
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
     com.github.clans.fab.FloatingActionButton fabDeclineAttendance;
     com.github.clans.fab.FloatingActionButton fabMaybeAttendance;
@@ -79,6 +80,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public String authorUserID;
     public Double currentEventLat;
     public Double currentEventLng;
+
+    public RecyclerView.Adapter commentAdapter;
 
     View.OnClickListener openProfileDetails = new View.OnClickListener() {
         @Override
@@ -104,7 +107,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         //Get handle of UI elements
         postContent = (TextView) findViewById(R.id.tv_EventDetails_event_contentn);
         toolbarTitle = (CollapsingToolbarLayout) findViewById(R.id.ct_eventdetails_title);
-        floatingMenu = (FloatingActionButton) findViewById(R.id.fam_attendance_status);
+        floatingMenu = (FloatingActionMenu) findViewById(R.id.fam_attendance_status);
         fabConfirmAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_confirm);
         fabDeclineAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_decline);
         fabMaybeAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_maybe);
@@ -182,14 +185,16 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
         commentsRecyclerView.setHasFixedSize(false);
 
-        DatabaseReference comments_ref = mDatabase_events.child(postID).child("event_comments");
-        RecyclerView.Adapter commentAdapter = new FirebaseRecyclerAdapter<MyEventComments,CommentsRecyclerHolder>(MyEventComments.class,
+        final DatabaseReference comments_ref = mDatabase_events.child(postID).child("event_comments");
+        commentAdapter = new FirebaseRecyclerAdapter<MyEventComments,CommentsRecyclerHolder>(MyEventComments.class,
                 R.layout.comments_recyclerview, CommentsRecyclerHolder.class,comments_ref ) {
             @Override
             protected void populateViewHolder(CommentsRecyclerHolder viewHolder, MyEventComments comment, int position) {
-                Log.e("Comment",comment.getCommentContent());
+                viewHolder.setParentEventID(comment.getParentEventID());
+                viewHolder.setCommentID(comment.getCommentID());
                 viewHolder.setContent(comment.getCommentContent());
                 viewHolder.setAuthorPic(comment.getAuthorUID());
+
             }
         };
         commentsRecyclerView.setAdapter(commentAdapter);
@@ -271,7 +276,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             DatabaseReference comments_Ref = mDatabase_events.child(postID).child("event_comments");
             String pushID = comments_Ref.push().getKey();
 
-            MyEventComments newComment = new MyEventComments(commentContent,getCurrentFirebaseUID());
+            MyEventComments newComment = new MyEventComments(commentContent,getCurrentFirebaseUID(),pushID,postID);
 
             Map<String, Object> commentUpdate = new HashMap<>();
             commentUpdate.put(pushID, newComment);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
     private final TextView mEventName;
     private final TextView mEventContent;
     private final ImageView mProfilePic;
+
     public String eventID;
 
     CardView mCard;
