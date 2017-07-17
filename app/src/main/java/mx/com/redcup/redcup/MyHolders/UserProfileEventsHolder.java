@@ -6,6 +6,7 @@ import android.media.Image;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
     private final ImageView mProfilePic;
     public String eventID;
 
-    CardView mCard;
+    FrameLayout container;
 
     private Context context;
 
@@ -39,12 +40,9 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
         mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
         mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
         mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
-        mCard = (CardView) itemView.findViewById(R.id.card_view);
+        container = (FrameLayout) itemView.findViewById(R.id.carditem_viewcontainer);
 
         context = itemView.getContext();
-
-
-        mCard.setClickable(true);
 
 
     }
@@ -76,6 +74,10 @@ public class UserProfileEventsHolder extends RecyclerView.ViewHolder {
 
     public void setPostID(String postID){
         eventID = postID;
+    }
+
+    public void makeInvisible(){
+        container.setVisibility(View.GONE);
     }
 
 }

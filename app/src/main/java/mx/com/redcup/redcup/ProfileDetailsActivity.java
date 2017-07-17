@@ -122,7 +122,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
             Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(view, "You can't friend yourself", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(view, "You can't befriend yourself", Snackbar.LENGTH_SHORT).show();
         }
     }
 

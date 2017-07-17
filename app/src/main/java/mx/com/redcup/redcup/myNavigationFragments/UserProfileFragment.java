@@ -106,16 +106,19 @@ public class UserProfileFragment extends Fragment  {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
         mStorageRef = FirebaseStorage.getInstance().getReference().child(getCurrentFirebaseUID());
 
+
         // TODO Filter the events and show only those created by user. If statement that checks MyEvents object author attribute if == me
-        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class, R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
+        final RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class,
+                R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
             @Override
             protected void populateViewHolder(UserProfileEventsHolder viewHolder, MyEvents event, int position) {
-
-                viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
-                viewHolder.setContent(event.getEventName());
-                viewHolder.setProfilePic(event.getUserID());
-
-
+                if (currentUID.equals(event.getUserID())) {
+                    viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
+                    viewHolder.setContent(event.getEventName());
+                    viewHolder.setProfilePic(event.getUserID());
+                } else{
+                    viewHolder.makeInvisible();
+                }
             }
         };
 

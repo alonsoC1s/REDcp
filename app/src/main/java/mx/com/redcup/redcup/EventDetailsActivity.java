@@ -282,7 +282,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             commentUpdate.put(pushID, newComment);
 
             comments_Ref.updateChildren(commentUpdate);
-            commentInputField.setText("");
+            commentInputField.setText(null);
             floatingMenu.setVisibility(View.VISIBLE);
             Snackbar.make(view,"Comment posted",Snackbar.LENGTH_SHORT).show();
         }
