@@ -100,7 +100,7 @@ public class UserProfileFragment extends Fragment  {
 
         // TODO Filter the events and show only those created by user. If statement that checks MyEvents object author attribute if == me
         final RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, UserProfileEventsHolder>(MyEvents.class,
-                R.layout.card_item, UserProfileEventsHolder.class ,mDatabase){
+                R.layout.recyclerrow_events, UserProfileEventsHolder.class ,mDatabase){
             @Override
             protected void populateViewHolder(UserProfileEventsHolder viewHolder, MyEvents event, int position) {
                 if (currentUID.equals(event.getUserID())) {

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +26,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,7 +51,6 @@ import mx.com.redcup.redcup.myDataModels.InviteStatus;
 import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
-import mx.com.redcup.redcup.myDataModels.RelationDetails;
 
 
 public class EventDetailsActivity extends AppCompatActivity implements OnGeofencingTransitionListener {
@@ -74,7 +71,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     RecyclerView commentsRecyclerView;
     EditText commentInputField;
     Button commentSendButton;
-
     CollapsingToolbarLayout toolbarTitle;
     FloatingActionMenu floatingMenu;
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
@@ -191,7 +187,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
         final DatabaseReference comments_ref = mDatabase_events.child(postID).child("event_comments");
         commentAdapter = new FirebaseRecyclerAdapter<MyEventComments,CommentsRecyclerHolder>(MyEventComments.class,
-                R.layout.comments_recyclerview, CommentsRecyclerHolder.class,comments_ref ) {
+                R.layout.recyclerrow_comments, CommentsRecyclerHolder.class,comments_ref ) {
             @Override
             protected void populateViewHolder(CommentsRecyclerHolder viewHolder, MyEventComments comment, int position) {
                 viewHolder.setParentEventID(comment.getParentEventID());
@@ -271,7 +267,13 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         //TODO: Promopt bottom modal fragment and show autocomplete list of user's friends, then send a notification to invitee
         Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
 
+        String currentUID = getCurrentFirebaseUID();
+        Bundle extras = new Bundle();
+        extras.putString("userID",currentUID);
+
         BottomSheetInviteFriends dialogFragment = new BottomSheetInviteFriends();
+        dialogFragment.setArguments(extras);
+
         dialogFragment.show(getSupportFragmentManager(), "Tag");
     }
 
@@ -312,12 +314,20 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         addAuthorAsFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference user_friendsRef = mDatabase_users.child(authorUserID).child("userFriends");
                 String currentUID = getCurrentFirebaseUID();
-                Map<String, Object> userFiends = new HashMap<>();
-                userFiends.put(currentUID, RelationDetails.USER_FRIEND);
+                DatabaseReference user1_friendsRef = mDatabase_users.child(authorUserID).child("userFriends"); //Author ref
+                DatabaseReference user2_friendsRef = mDatabase_users.child(currentUID).child("userFriends"); // Viewer ref
 
-                user_friendsRef.updateChildren(userFiends);
+                //For author
+                Map<String, Object> userFiend = new HashMap<>();
+                userFiend.put(currentUID,currentUID);
+
+                //For viewer
+                Map<String, Object> newFriend = new HashMap<>();
+                newFriend.put(authorUserID,authorUserID);
+
+                user1_friendsRef.updateChildren(userFiend);
+                user2_friendsRef.updateChildren(newFriend);
 
                 Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
                 extraEventOptions.dismiss();

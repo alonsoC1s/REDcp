@@ -17,7 +17,7 @@ public class MyUsers {
     public String email;
     public int level;
     public Double userRating;
-    public Map<String, RelationDetails> userFriends = new HashMap<>();
+    public Map<String, String> userFriends = new HashMap<>();
     public List<String> userPosts; //String list to store pushID of the posts created by user.
 
     public MyUsers(){
@@ -47,8 +47,8 @@ public class MyUsers {
     public String getFacebookUID(){return facebookUID;}
 
     @Exclude
-    public Map<String,RelationDetails> toMap(){
-        HashMap<String,RelationDetails> result = new HashMap<>();
+    public Map<String,String> toMap(){
+        HashMap<String,String> result = new HashMap<>();
 
         return result;
     }

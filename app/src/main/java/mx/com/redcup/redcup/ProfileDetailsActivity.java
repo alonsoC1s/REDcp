@@ -4,7 +4,6 @@ package mx.com.redcup.redcup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,9 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
-import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,10 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
-import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
-import mx.com.redcup.redcup.myDataModels.RelationDetails;
 
 
 public class ProfileDetailsActivity extends AppCompatActivity {
@@ -110,35 +104,50 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     }
 
     public void addFriend(String userID, View view){
-        //Get the user id, and add it to the authors list of friends
-        DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
         String currentUID = getCurrentFirebaseUID();
 
-        if (userID != currentUID) {
-            Map<String, Object> userFiends = new HashMap<>();
-            userFiends.put(currentUID, RelationDetails.USER_FRIEND);
+        if (!userID.equals(currentUID)) {
+            DatabaseReference user1_friendsRef = mDatabase_users.child(userID).child("userFriends"); //Profile owner
+            DatabaseReference user2_friendsRef = mDatabase_users.child(currentUID).child("userFriends"); // Viewer ref
 
-            user_friendsRef.updateChildren(userFiends);
+            //For profile owner
+            Map<String, Object> userFiend = new HashMap<>();
+            userFiend.put(currentUID, currentUID);
+
+            //For viewer
+            Map<String, Object> newFriend = new HashMap<>();
+            newFriend.put(userID, userID);
+
+            user1_friendsRef.updateChildren(userFiend);
+            user2_friendsRef.updateChildren(newFriend);
 
             Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
+
         } else {
             Snackbar.make(view, "You can't befriend yourself", Snackbar.LENGTH_SHORT).show();
         }
     }
 
     public void addFollower(String userID, View view){
-        //Get the user id, and add it to the authors list of followers
-        DatabaseReference user_friendsRef = mDatabase_users.child(userID).child("userFriends");
         String currentUID = getCurrentFirebaseUID();
 
-        if (userID != currentUID) {
-            Map<String, Object> userFiends = new HashMap<>();
-            userFiends.put(currentUID, RelationDetails.USER_FOLLOWER);
+        if (!userID.equals(currentUID)) {
+            DatabaseReference user1_friendsRef = mDatabase_users.child(userID).child("userFollowers"); //Profile owner
+            DatabaseReference user2_friendsRef = mDatabase_users.child(currentUID).child("userFollowers"); // Viewer ref
 
-            user_friendsRef.updateChildren(userFiends);
+            //For profile owner
+            Map<String, Object> userFiend = new HashMap<>();
+            userFiend.put(currentUID, currentUID);
 
-            //Toast.makeText(getApplicationContext(),(userUid+" now follows "+ userID),Toast.LENGTH_LONG).show();
-            Snackbar.make(view, "You are now a follower...", Snackbar.LENGTH_SHORT).show();
+            //For viewer
+            Map<String, Object> newFriend = new HashMap<>();
+            newFriend.put(userID, userID);
+
+            user1_friendsRef.updateChildren(userFiend);
+            user2_friendsRef.updateChildren(newFriend);
+
+            Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
+
         } else {
             Snackbar.make(view, "You can't follow yourself", Snackbar.LENGTH_SHORT).show();
         }
@@ -151,7 +160,6 @@ public class ProfileDetailsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyUsers user = dataSnapshot.getValue(MyUsers.class);
-                //TODO Set the scrim to some picture. setStatusBarScrim(Drawable)
                 ///postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(user.getDisplayName());
                 authorName.setText(user.getDisplayName());

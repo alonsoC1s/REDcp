@@ -38,9 +38,11 @@ public class FriendsFragment extends Fragment {
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
         // TODO Filter the events and show only those created by friends. If statement that checks MyEvents object author attribute and compare against user friends
-        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, EventsRecyclerHolder>(MyEvents.class, R.layout.card_item, EventsRecyclerHolder.class ,mDatabase){
+        final RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, EventsRecyclerHolder>
+                (MyEvents.class, R.layout.recyclerrow_events, EventsRecyclerHolder.class ,mDatabase){
             @Override
             protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
+
                 viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
                 viewHolder.setContent(event.getEventName());
                 viewHolder.setProfilePic(event.getUserID());

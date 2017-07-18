@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout
     android:padding="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -6,14 +11,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:textSize="25sp"
-        android:text="Invite your friends"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="25sp"
+            android:text="Invite your friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/ic_send_blue"
+            android:layout_width="23dp"
+            android:layout_height="23dp" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_invitefriends_friendlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
 </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

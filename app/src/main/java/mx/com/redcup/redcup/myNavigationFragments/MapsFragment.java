@@ -272,7 +272,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void drawMarkersFromFirebaseDB() {
-
         mDataBase_events.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
