@@ -8,9 +8,9 @@ android {
         applicationId "mx.com.redcup.redcup"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 4
+        versionCode 5
 
-        versionName "1.12"
+        versionName "1.20"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -55,7 +55,6 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
     compile 'com.google.firebase:firebase-storage:10.2.1'
-    compile 'com.google.firebase:firebase-invites:10.2.1'
 
     compile 'io.nlopez.smartlocation:library:3.3.1'
 
