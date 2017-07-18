@@ -1,17 +1,15 @@
-package mx.com.redcup.redcup.MyHolders;
+package mx.com.redcup.redcup.Holders_extensions;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
-import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,12 +20,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import mx.com.redcup.redcup.EventDetailsActivity;
-import mx.com.redcup.redcup.LoginActivity;
-import mx.com.redcup.redcup.NavActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
-
-import static java.security.AccessController.getContext;
 
 
 public class EventsRecyclerHolder extends RecyclerView.ViewHolder {

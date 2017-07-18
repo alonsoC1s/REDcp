@@ -2,12 +2,9 @@ package mx.com.redcup.redcup.myNavigationFragments;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -25,10 +21,6 @@ import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,8 +33,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import mx.com.redcup.redcup.MyHolders.UserProfileEventsHolder;
-import mx.com.redcup.redcup.NewPostActivity;
+import mx.com.redcup.redcup.Holders_extensions.UserProfileEventsHolder;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;

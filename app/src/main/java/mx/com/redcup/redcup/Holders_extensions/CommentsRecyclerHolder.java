@@ -1,4 +1,4 @@
-package mx.com.redcup.redcup.MyHolders;
+package mx.com.redcup.redcup.Holders_extensions;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;

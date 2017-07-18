@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (!dataSnapshot.hasChild("displayName")) {
+                Toast.makeText(getApplicationContext(),"Are you new to Redcupa? We are creating a new user for you", Toast.LENGTH_LONG).show();
                 firstLogin = true;
             }
         }
@@ -166,9 +167,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                mDatabaseRef.child(user.getUid()).addListenerForSingleValueEvent(checkIfName);
-
                 if (user != null) {
+                    mDatabaseRef.child(user.getUid()).addListenerForSingleValueEvent(checkIfName);
                     Log.i(TAG,"Login to Firebase was successful. Redirecting to Sign up activity");
                     if (firstLogin) {
                         if (isFacebookUser){

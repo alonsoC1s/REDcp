@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import mx.com.redcup.redcup.MyHolders.EventsRecyclerHolder;
+import mx.com.redcup.redcup.Holders_extensions.EventsRecyclerHolder;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 

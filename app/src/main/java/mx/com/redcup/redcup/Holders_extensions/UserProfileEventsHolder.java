@@ -1,23 +1,18 @@
-package mx.com.redcup.redcup.MyHolders;
+package mx.com.redcup.redcup.Holders_extensions;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import mx.com.redcup.redcup.EventDetailsActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 

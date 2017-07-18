@@ -2,7 +2,9 @@ package mx.com.redcup.redcup;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +23,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
-import com.facebook.login.widget.ProfilePictureView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.appinvite.AppInvite;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.location.Geofence;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,8 +46,8 @@ import io.nlopez.smartlocation.OnGeofencingTransitionListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
 import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
-import mx.com.redcup.redcup.MyHolders.CommentsRecyclerHolder;
-import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
+import mx.com.redcup.redcup.Holders_extensions.BottomSheetInviteFriends;
+import mx.com.redcup.redcup.Holders_extensions.CommentsRecyclerHolder;
 import mx.com.redcup.redcup.myDataModels.InviteStatus;
 import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
@@ -250,18 +252,25 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
     public void shareThisEvent(String postID, View view){
         //TODO: Implement dynamic links, and then prompt a modal bottom fragment to share;
+        Intent intent = new AppInviteInvitation.IntentBuilder("title")
+                .setMessage("title")
+                .setDeepLink(Uri.parse("https://cb8v7.app.goo.gl/"))
+                .build();
 
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
         sendIntent.setType("text/plain");
-        startActivity(sendIntent);
+        startActivity(intent);
     }
 
     public void inviteFriend(String postID, View view){
         //TODO: Promopt bottom modal fragment and show autocomplete list of user's friends, then send a notification to invitee
         Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+
+        BottomSheetInviteFriends dialogFragment = new BottomSheetInviteFriends();
+        dialogFragment.show(getSupportFragmentManager(), "Tag");
     }
 
     public void openMoreMenu(String postID, View view){
