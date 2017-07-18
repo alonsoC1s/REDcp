@@ -1,6 +1,7 @@
 package mx.com.redcup.redcup;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import mx.com.redcup.redcup.myDataModels.InviteStatus;
 import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
+import mx.com.redcup.redcup.myDataModels.RelationDetails;
 
 
 public class EventDetailsActivity extends AppCompatActivity implements OnGeofencingTransitionListener {
@@ -273,9 +275,54 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         dialogFragment.show(getSupportFragmentManager(), "Tag");
     }
 
-    public void openMoreMenu(String postID, View view){
-        //TODO: Show thing to let the user delete the post only if they are the author
-        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+    public void openMoreMenu(final String postID, final View view){
+
+        final Dialog extraEventOptions = new Dialog(this);
+        extraEventOptions.setContentView(R.layout.dialog_event_options);
+
+        Button editEvent = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_edit);
+        Button deleteEvent = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_delete);
+        Button addAuthorAsFriend = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_addFriend);
+
+        if (authorUserID.equals(getCurrentFirebaseUID())){
+            addAuthorAsFriend.setVisibility(View.GONE);
+        }else {
+            editEvent.setEnabled(false);
+            deleteEvent.setEnabled(false);
+        }
+
+        extraEventOptions.show();
+
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v,"not yet functional",Toast.LENGTH_SHORT).show();
+                extraEventOptions.dismiss();
+            }
+        });
+
+        deleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDatabase_events.child(postID).removeValue();
+                extraEventOptions.dismiss();
+            }
+        });
+
+        addAuthorAsFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference user_friendsRef = mDatabase_users.child(authorUserID).child("userFriends");
+                String currentUID = getCurrentFirebaseUID();
+                Map<String, Object> userFiends = new HashMap<>();
+                userFiends.put(currentUID, RelationDetails.USER_FRIEND);
+
+                user_friendsRef.updateChildren(userFiends);
+
+                Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
+                extraEventOptions.dismiss();
+            }
+        });
     }
 
     public void postNewComment(String postID, String commentContent, View view){

@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -20,15 +19,10 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphRequestAsyncTask;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -42,13 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.Arrays;
-import java.util.List;
-
-import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -265,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
     public void showEmailSignUp(View view){
         isFacebookUser = false;
         Dialog loginDialog = new Dialog(this);
-        loginDialog.setContentView(R.layout.email_login_dialog);
+        loginDialog.setContentView(R.layout.dialog_email_login);
 
         final EditText emailField;
         final EditText passwordField;

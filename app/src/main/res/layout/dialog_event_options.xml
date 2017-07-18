@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/btn_eventdialog_edit"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:textAllCaps="false"
+        android:text="Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <Button
+        android:id="@+id/btn_eventdialog_delete"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:textAllCaps="false"
+        android:text="Delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <Button
+        android:id="@+id/btn_eventdialog_addFriend"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:textAllCaps="false"
+        android:text="Add Friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
