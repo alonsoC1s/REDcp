@@ -26,6 +26,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -37,6 +40,8 @@ import mx.com.redcup.redcup.myNavigationFragments.UserProfileFragment;
 
 public class NavActivity extends AppCompatActivity {
     private String TAG = "NavActivity (Main)";
+
+    public String firebaseUID;
 
     //Create Fragment objects to be switched to
     MapsFragment mapFragment = new MapsFragment();
@@ -86,6 +91,8 @@ public class NavActivity extends AppCompatActivity {
         if (user == null) {
             Log.e(TAG, "User is not logged in. Redirecting to LoginActivity");
             goLoginScreen();
+        } else {
+            firebaseUID = user.getUid();
         }
 
 
@@ -99,6 +106,10 @@ public class NavActivity extends AppCompatActivity {
         //Getting Map initialized
         final MapsFragment testFragment = new MapsFragment();
         getFragmentManager().beginTransaction().replace(R.id.Nav_activity_content, testFragment).commit();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent").child(firebaseUID).child("device_token");
+        mdatabase.setValue(token);
 
     }
 

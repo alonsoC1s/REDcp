@@ -65,9 +65,6 @@ public class MyEvents {
     public String getEventMinutes(){ return String.valueOf(eventDate.getMinutes());}
 
 
-
-    //TODO: Create a method that adds UIDs of the users invited. Only if private; Add Timestamp to markers
-
     @Exclude
     public Map<String,AttendanceStatus> toMap(){
         HashMap<String,AttendanceStatus> result = new HashMap<>();

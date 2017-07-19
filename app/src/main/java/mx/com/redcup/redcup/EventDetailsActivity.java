@@ -279,8 +279,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
     public void inviteFriend(String postID, View view){
         //TODO: Promopt bottom modal fragment and show autocomplete list of user's friends, then send a notification to invitee
-        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
-
         String currentUID = getCurrentFirebaseUID();
         Bundle extras = new Bundle();
         extras.putString("userID",currentUID);
@@ -288,7 +286,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         BottomSheetInviteFriends dialogFragment = new BottomSheetInviteFriends();
         dialogFragment.setArguments(extras);
 
-        dialogFragment.show(getSupportFragmentManager(), "Tag");
+        dialogFragment.show(getSupportFragmentManager(), "ModalBottomFragment");
     }
 
     public void openMoreMenu(final String postID, final View view){
