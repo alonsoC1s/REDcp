@@ -80,6 +80,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public String authorUserID;
     public Double currentEventLat;
     public Double currentEventLng;
+    public Boolean isEventLiked;
 
     public RecyclerView.Adapter commentAdapter;
 
@@ -243,9 +244,22 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     }
 
     public void faveThisEvent(String postID, View view){
-        //TODO: Create a new property of events class, which will hold ratings or likes (undecided) and then increment said value here
-        Snackbar.make(view, "This is still in development...",Snackbar.LENGTH_SHORT).show();
+        String currentUID = getCurrentFirebaseUID();
+        DatabaseReference user1_friendsRef = mDatabase_events.child(postID).child("likes"); //Author ref
 
+        if ( !isEventLiked) {//Liked for the first time
+            //Marking the user liked the post
+            Map<String, Object> newLike = new HashMap<>();
+            newLike.put(currentUID, currentUID);
+
+            user1_friendsRef.updateChildren(newLike);
+            faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_red));
+            isEventLiked = true;
+        } else {
+            user1_friendsRef.child(currentUID).removeValue();
+            faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+            isEventLiked = false;
+        }
     }
 
     public void shareThisEvent(String postID, View view){
@@ -307,6 +321,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             @Override
             public void onClick(View v) {
                 mDatabase_events.child(postID).removeValue();
+                mDatabase_users.child(authorUserID).child("user_posts").child(postID).removeValue();
                 extraEventOptions.dismiss();
             }
         });
@@ -385,7 +400,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     }
 
     public void populateActivityData(String postID){
-        mDatabase_events.child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference queryPoint = mDatabase_events.child(postID);
+        queryPoint.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyEvents event = dataSnapshot.getValue(MyEvents.class);
@@ -400,6 +416,14 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 setUserData(event.getUserID());
                 String time = (event.getEventHour() + ":" + event.getEventMinutes() + " pm" );
                 displayTime.setText(time);
+
+                if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){
+                    faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_red));
+                    isEventLiked = true;
+                }else {
+                    faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+                    isEventLiked = false;
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

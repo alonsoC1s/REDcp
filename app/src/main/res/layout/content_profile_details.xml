@@ -7,57 +7,17 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="mx.com.redcup.redcup.EventDetailsActivity"
-    tools:showIn="@layout/activity_event_details">
+    tools:showIn="@layout/activity_profile_details">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="20dp"
-        android:paddingLeft="10dp"
-        >
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:id="@+id/tv_eventdetails_userpic"
-            android:layout_margin="20dp"
-            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_profiledetails_userposts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-
-        <TextView
-            android:id="@+id/tv_eventDetails_userName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/tv_eventdetails_userpic"
-            android:paddingLeft="10dp"
-            android:textSize="30sp"
-            android:maxWidth="150dp"
-            android:maxHeight="80dp"
-            />
-
-        <TextView
-            android:id="@+id/tv_display_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/tv_eventDetails_userName"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
-            />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_EventDetails_event_contentn"
-            app:layout_constraintTop_toBottomOf="@id/tv_eventdetails_userpic"
-            android:textSize="20sp"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/large_text" />
-
-
-
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

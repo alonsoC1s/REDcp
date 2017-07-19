@@ -29,6 +29,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
@@ -69,7 +73,12 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //Create date picker dialog
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(this,NewPostActivity.this,2017,4,12);
+        Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this,NewPostActivity.this,mYear,mMonth,mDay);
 
         //Create time picker dialog
         final TimePickerDialog timePickerDialog = new TimePickerDialog(this,NewPostActivity.this,12,30,false);
@@ -152,8 +161,16 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
             mDatabase.child("Events_parent").child(pushKey).setValue(new_event);
         }
 
+        //Add the post ID to a list of posts created by this user
+        Map<String,Object> postUpdate = new HashMap<>();
+        postUpdate.put(pushKey,pushKey);
+
+        mDatabase.child("Users_parent").child(userID).child("user_posts").updateChildren(postUpdate);
+
+
         //End posting to database
         Toast.makeText(getApplicationContext(),"Post created!",Toast.LENGTH_SHORT).show();
+
 
         returnToMap();
 
@@ -174,7 +191,6 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
     public void returnToMap(){
         Log.i(TAG,"Initiating NewPostActivity.");
         Intent intent = new Intent(this, NavActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

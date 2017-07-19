@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +32,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import mx.com.redcup.redcup.Holders_extensions.UserProfileEventsHolder;
+import mx.com.redcup.redcup.myDataModels.MyEvents;
 import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
@@ -39,10 +44,9 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     public DatabaseReference mDatabase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
 
     TextView postContent;
-    TextView authorName;
     ImageView authorPic;
     ImageView coverPic;
-    TextView displayTime;
+    RecyclerView userPosts;
 
     CollapsingToolbarLayout toolbarTitle;
     com.github.clans.fab.FloatingActionButton fabAddFriend;
@@ -68,10 +72,26 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         fabAddFriend = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_add_friend);
         fabInviteUser = (com.github.clans.fab.FloatingActionButton)findViewById(R.id.fab_invite_user);
         fabFollowUser = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_follow_user);
-        authorName = (TextView) findViewById(R.id.tv_eventDetails_userName);
-        authorPic = (ImageView) findViewById(R.id.tv_eventdetails_userpic);
+        authorPic = (ImageView) findViewById(R.id.iv_profiledetails_profilepic);
         coverPic = (ImageView) findViewById(R.id.profiledetails_coverimage);
-        displayTime = (TextView) findViewById(R.id.tv_display_time);
+        userPosts = (RecyclerView) findViewById(R.id.rv_profiledetails_userposts);
+
+        DatabaseReference mPostRef = FirebaseDatabase.getInstance().getReference().child("Users_parent").child(getCurrentFirebaseUID()).child("user_posts");
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+
+        RecyclerView.Adapter indexedAdapter = new FirebaseIndexRecyclerAdapter<MyEvents, UserProfileEventsHolder>(
+                MyEvents.class, R.layout.recyclerrow_events, UserProfileEventsHolder.class, mPostRef, mDatabase) {
+            @Override
+            protected void populateViewHolder(UserProfileEventsHolder viewHolder, MyEvents event, int position) {
+                viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
+                viewHolder.setContent(event.getEventName());
+                viewHolder.setProfilePic(event.getUserID());
+            }
+        };
+
+        userPosts.setAdapter(indexedAdapter);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        userPosts.setLayoutManager(llm);
 
 
         //Set onClick listeners for the FABs to log the user as whatever status they chose.
@@ -162,7 +182,6 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 MyUsers user = dataSnapshot.getValue(MyUsers.class);
                 ///postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(user.getDisplayName());
-                authorName.setText(user.getDisplayName());
                 Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
                         .load(mStorage.child(userID).child("profile_picture")).signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                         .into(authorPic);
