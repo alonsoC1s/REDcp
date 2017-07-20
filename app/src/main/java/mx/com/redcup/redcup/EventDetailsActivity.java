@@ -3,6 +3,7 @@ package mx.com.redcup.redcup;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -59,6 +60,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public DatabaseReference mDatabase_events = FirebaseDatabase.getInstance().getReference().child("Events_parent");
     public DatabaseReference mDatabase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
+
+    public Drawable blue_heart = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
+    public Drawable red_heart = getResources().getDrawable(R.drawable.ic_favorite_red);
 
     TextView postContent;
     TextView authorName;
@@ -253,11 +257,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             newLike.put(currentUID, currentUID);
 
             user1_friendsRef.updateChildren(newLike);
-            faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_red));
+            faveEvent.setBackground(red_heart);
             isEventLiked = true;
         } else {
             user1_friendsRef.child(currentUID).removeValue();
-            faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+            faveEvent.setBackground(blue_heart);
             isEventLiked = false;
         }
     }
@@ -416,10 +420,10 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 displayTime.setText(time);
 
                 if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){
-                    faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_red));
+                    faveEvent.setBackground(red_heart);
                     isEventLiked = true;
                 }else {
-                    faveEvent.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+                    faveEvent.setBackground(blue_heart);
                     isEventLiked = false;
                 }
             }
