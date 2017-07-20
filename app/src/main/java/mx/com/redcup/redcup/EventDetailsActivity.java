@@ -61,8 +61,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public DatabaseReference mDatabase_users = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     public StorageReference mStorage = FirebaseStorage.getInstance().getReference();
 
-    public Drawable blue_heart = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
-    public Drawable red_heart = getResources().getDrawable(R.drawable.ic_favorite_red);
+    Drawable red_heart;
+    Drawable blue_heart;
 
     TextView postContent;
     TextView authorName;
@@ -127,6 +127,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         commentSendButton = (Button) findViewById(R.id.btn_eventdetails_sendcomment);
         commentsRecyclerView = (RecyclerView) findViewById(R.id.rv_eventdetails_comments);
 
+        blue_heart = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
+        red_heart = getResources().getDrawable(R.drawable.ic_favorite_red);
 
         //Set onClick listeners for the FABs to log the user as whatever status they chose.
         //TODO Add a function to write new post to their profiles saying they changed their attendace status to <insert status>
@@ -267,18 +269,12 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     }
 
     public void shareThisEvent(String postID, View view){
-        //TODO: Implement dynamic links, and then prompt a modal bottom fragment to share;
-        Intent intent = new AppInviteInvitation.IntentBuilder("title")
-                .setMessage("title")
-                .setDeepLink(Uri.parse("https://cb8v7.app.goo.gl/"))
+        Intent intent = new AppInviteInvitation.IntentBuilder("Invite all your friends")
+                .setMessage("I will be going out tonight, join me. Here is the event info")
+                .setDeepLink(Uri.parse("https://cb8v7.app.goo.gl/jTpt"))
                 .build();
 
-
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-        sendIntent.setType("text/plain");
-        startActivity(intent);
+        startActivityForResult(intent,3);
     }
 
     public void inviteFriend(String postID, View view){
@@ -286,6 +282,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         String currentUID = getCurrentFirebaseUID();
         Bundle extras = new Bundle();
         extras.putString("userID",currentUID);
+        extras.putString("postID",postID);
 
         BottomSheetInviteFriends dialogFragment = new BottomSheetInviteFriends();
         dialogFragment.setArguments(extras);
