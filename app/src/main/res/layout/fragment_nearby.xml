@@ -1,17 +1,39 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+    android:id="@+id/nearbyFragment_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:fitsSystemWindows="true"
-    tools:context="mx.com.redcup.redcup.myNavigationFragments.FriendsFragment">
+    >
 
-
-    <android.support.v7.widget.RecyclerView
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout_map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rv_recycler_view"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:fitsSystemWindows="true"
         >
+        <Toolbar
+            android:title="Feed"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_collapseMode="pin"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
+    </android.support.design.widget.AppBarLayout>
 
-    </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_create_post"
+        android:layout_margin="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:elevation="20dp"
+        android:clickable="true"
+        android:src="@drawable/button_add" />
+
+
+<include layout="@layout/content_nearby_fragment"/>
+
+</android.support.design.widget.CoordinatorLayout>

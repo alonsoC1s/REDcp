@@ -197,8 +197,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 R.layout.recyclerrow_comments, CommentsRecyclerHolder.class,comments_ref ) {
             @Override
             protected void populateViewHolder(CommentsRecyclerHolder viewHolder, MyEventComments comment, int position) {
+                String key = this.getRef(position).getKey();
                 viewHolder.setParentEventID(comment.getParentEventID());
-                viewHolder.setCommentID(comment.getCommentID());
+                viewHolder.setCommentID(key);
                 viewHolder.setContent(comment.getCommentContent());
                 viewHolder.setAuthorPic(comment.getAuthorUID());
 
@@ -352,11 +353,12 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public void postNewComment(String postID, String commentContent, View view){
         if (TextUtils.isEmpty(commentContent)){
             commentInputField.setError("Required");
+
         } else{
             DatabaseReference comments_Ref = mDatabase_events.child(postID).child("event_comments");
             String pushID = comments_Ref.push().getKey();
 
-            MyEventComments newComment = new MyEventComments(commentContent,getCurrentFirebaseUID(),pushID,postID);
+            MyEventComments newComment = new MyEventComments(commentContent,getCurrentFirebaseUID(),postID);
 
             Map<String, Object> commentUpdate = new HashMap<>();
             commentUpdate.put(pushID, newComment);

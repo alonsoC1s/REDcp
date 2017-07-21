@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -42,6 +44,7 @@ public class NavActivity extends AppCompatActivity {
     private String TAG = "NavActivity (Main)";
 
     public String firebaseUID;
+    Window window;
 
     //Create Fragment objects to be switched to
     MapsFragment mapFragment = new MapsFragment();
@@ -110,6 +113,8 @@ public class NavActivity extends AppCompatActivity {
         String token = FirebaseInstanceId.getInstance().getToken();
         DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent").child(firebaseUID).child("device_token");
         mdatabase.setValue(token);
+
+        window = getWindow();
 
     }
 

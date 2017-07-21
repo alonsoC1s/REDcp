@@ -5,6 +5,8 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -130,6 +132,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
+    //Drawbles and colors
+    int handIcon;
+    int red;
+    int white;
+    int black;
+
     BottomSheetBehavior.BottomSheetCallback bottomFragmentCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -137,10 +145,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             switch (newState){
                 case BottomSheetBehavior.STATE_DRAGGING:
                     fabNewEvent.setOnClickListener(fabClickExpanded);
-                    fabNewEvent.setImageResource(R.drawable.ic_attend);
+                    fabNewEvent.setImageResource(handIcon);
 
-                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    bottomSheetTitle.setTextColor(getResources().getColor(R.color.white));
+                    eventNamecontainer.setBackgroundColor(red);
+                    bottomSheetTitle.setTextColor(white);
 
                     getEventDataOnMarkerClick(currentMarkerEventID);
 
@@ -149,15 +157,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     fabNewEvent.setOnClickListener(fabClickCollapsed);
                     fabNewEvent.setImageResource(R.drawable.button_add);
 
-                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.white));
-                    bottomSheetTitle.setTextColor(getResources().getColor(R.color.black));
+                    eventNamecontainer.setBackgroundColor(white);
+                    bottomSheetTitle.setTextColor(black);
                     break;
                 case BottomSheetBehavior.STATE_HIDDEN:
                     fabNewEvent.setOnClickListener(fabClickCollapsed);
                     fabNewEvent.setImageResource(R.drawable.button_add);
 
-                    eventNamecontainer.setBackgroundColor(getResources().getColor(R.color.white));
-                    bottomSheetTitle.setTextColor(getResources().getColor(R.color.black));
+                    eventNamecontainer.setBackgroundColor(white);
+                    bottomSheetTitle.setTextColor(black);
                     break;
                 }
         }
@@ -183,6 +191,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         cardAuthorPic = (ImageView) view.findViewById(R.id.card_authorPic);
         cardAuthorName = (TextView) view.findViewById(R.id.card_authorName);
         gotoEventDetails = (Button) view.findViewById(R.id.btn_goto_eventdetails);
+
+        //Get colors and drawables
+        handIcon = R.drawable.ic_attend;
+        black = getResources().getColor(R.color.black);
+        red = getResources().getColor(R.color.colorPrimary);
+        white = getResources().getColor(R.color.white);
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setBottomSheetCallback(bottomFragmentCallback);
@@ -272,6 +286,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void drawMarkersFromFirebaseDB() {
+        //TODO: ask if the object is post or event by calling snapshot.child(content_type).getValue(String). If P use P consturctor if E use E constructor
         mDataBase_events.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -284,8 +299,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                 .title(newEvent.getEventName());
 
                         googleMap_fragment.addMarker(options).setTag(newEvent.getEventID());
-                    } //End if statement
-
+                    }
                 }
             }
 

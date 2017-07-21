@@ -21,11 +21,12 @@ public class MyEvents {
     public String eventID;
     public Map<String, AttendanceStatus> attendance_list = new HashMap<>();
     public Map<String, InviteStatus> invitee_list = new HashMap<>();
-    public Map<String,String> user_posts = new HashMap<>();
+    //public Map<String,String> user_posts = new HashMap<>();
     public Map<String ,String> likes = new HashMap<>();
     public MyEventComments event_comments;
     public boolean eventPublic;
     public MyDate eventDate;
+    public String contentType;
 
 
     public MyEvents(){
@@ -45,8 +46,10 @@ public class MyEvents {
         this.eventID = eventID;
 
         eventDate = new MyDate(year,month,day,hour,minute);
+        this.contentType = "Event";
 
     }
+
 
     public String getEventName() {return eventName;}
     ////
