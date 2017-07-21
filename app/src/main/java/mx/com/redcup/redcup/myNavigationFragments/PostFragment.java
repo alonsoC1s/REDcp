@@ -6,26 +6,28 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import mx.com.redcup.redcup.R;
+import mx.com.redcup.redcup.myDataModels.MyPosts;
 
 public class PostFragment extends Fragment {
-
-    LinearLayout myContainer;
-
-    int cx;
-    int cy;
-    int finalRadius;
-    int initialRadius;
-
-    Window window;
 
     private final Runnable revealAnimationRunnable = new Runnable() {
         @Override
@@ -78,6 +80,17 @@ public class PostFragment extends Fragment {
         }
     };
 
+    LinearLayout myContainer;
+    Button sendPost;
+    EditText postContent;
+
+    int cx;
+    int cy;
+    int finalRadius;
+    int initialRadius;
+
+    Window window;
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
 
 
     @Nullable
@@ -89,8 +102,19 @@ public class PostFragment extends Fragment {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         myContainer = (LinearLayout) view.findViewById(R.id.container_newpost);
+        sendPost = (Button) view.findViewById(R.id.btn_newpost_send);
+        postContent = (EditText) view.findViewById(R.id.et_newpost_postcontent);
 
         myContainer.post(revealAnimationRunnable);
+
+        sendPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = postContent.getText().toString();
+                String pushID = mDatabase.push().getKey();
+                MyPosts newPost = new MyPosts(content,getCurrentFirebaseUID(),pushID);
+            }
+        });
 
         return view;
     }
@@ -110,5 +134,15 @@ public class PostFragment extends Fragment {
 
     }
 
+    public String getCurrentFirebaseUID(){
+        String UID = "";
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            UID = user.getUid();
+        } else {
+            Log.e(TAG,"User is unexpectedly null.");
+        }
+        return UID;
+    }
 
 }

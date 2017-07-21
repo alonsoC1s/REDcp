@@ -37,7 +37,9 @@
         <activity
             android:name=".NavActivity"
             android:label="Redcupa"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +48,9 @@
         </activity>
         <activity
             android:name=".NewPostActivity"
-            android:label="Create a new event" />
+            android:label="Create a new event"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity
             android:name=".EventDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar"
