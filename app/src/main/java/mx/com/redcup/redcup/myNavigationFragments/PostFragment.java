@@ -140,7 +140,7 @@ public class PostFragment extends Fragment {
         if (user != null){
             UID = user.getUid();
         } else {
-            Log.e(TAG,"User is unexpectedly null.");
+            Log.e("TAG","User is unexpectedly null.");
         }
         return UID;
     }

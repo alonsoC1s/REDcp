@@ -15,7 +15,7 @@
         >
         <Toolbar
             android:title="Feed"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:layout_collapseMode="pin"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"/>
