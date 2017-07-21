@@ -33,7 +33,7 @@ public class BottomSheetInviteFriends extends BottomSheetDialogFragment {
 
         usersFriendsList = (RecyclerView) contentView.findViewById(R.id.rv_invitefriends_friendlist);
         usersFriendsList.setHasFixedSize(false);
-        usersFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        usersFriendsList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
 
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users_parent").child(userID).child("userFriends");
