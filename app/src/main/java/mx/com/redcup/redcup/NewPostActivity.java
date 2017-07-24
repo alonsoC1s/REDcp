@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mx.com.redcup.redcup.myDataModels.MyEvents;
@@ -39,8 +40,34 @@ import mx.com.redcup.redcup.myDataModels.MyUsers;
 @IgnoreExtraProperties
 public class NewPostActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
+    private final Runnable updateFriendsFeedList = new Runnable() {
+        @Override
+        public void run() {
+            DatabaseReference friendsRef = mDatabase.child("Users_parent").child(getCurrentUID()).child("userFriends");
+            friendsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        userFriends.add(snapshot.getValue(String.class));
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+            for (String friend: userFriends){
+                DatabaseReference friendReference = mDatabase.child("Feeds").child(friend);
+                friendReference.updateChildren(createdPost);
+            }
+        }
+    };
+
     public double chosenLat;
     public double chosenLong;
+
+    public List<String> userFriends;
+    public Map<String,Object> createdPost;
 
     private String TAG = "NewPostActivity";
 
@@ -165,12 +192,15 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
         Map<String,Object> postUpdate = new HashMap<>();
         postUpdate.put(pushKey,pushKey);
 
-        mDatabase.child("Users_parent").child(userID).child("user_posts").updateChildren(postUpdate);
+        createdPost = postUpdate;
 
+        mDatabase.child("Users_parent").child(userID).child("user_posts").updateChildren(postUpdate);
 
         //End posting to database
         Toast.makeText(getApplicationContext(),"Post created!",Toast.LENGTH_SHORT).show();
 
+        //TODO: Push the PID to the feed list of the users friends:
+        // i.e Get friend's UID from friend_list, and iterate through them, adding PID to their feed list
 
         returnToMap();
 
