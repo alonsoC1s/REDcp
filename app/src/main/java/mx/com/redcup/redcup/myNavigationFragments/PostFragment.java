@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyPosts;
@@ -76,44 +75,16 @@ public class PostFragment extends Fragment {
         }
     };
 
-    private final Runnable animationHideDrawable = new Runnable() {
-        @Override
-        public void run() {
-
-
-            int cx = (myContainer.getRight() -10);
-            int cy = (myContainer.getBottom() - 10);
-
-            int initialRadius = myContainer.getWidth();
-
-            Animator anim = ViewAnimationUtils.createCircularReveal(myContainer, cx, cy, initialRadius, 0);
-
-            myContainer.setVisibility(View.VISIBLE);
-            anim.start();
-
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    myContainer.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                    myContainer.setVisibility(View.INVISIBLE);
-                    window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-                }
-            });
-        }
-    };
 
     LinearLayout myContainer;
     Button sendPost;
     EditText postContent;
 
-    List<String> userFriends;
     Map<String,Object> createdPost;
 
     int cx;
     int cy;
     int finalRadius;
-    int initialRadius;
 
     Window window;
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
