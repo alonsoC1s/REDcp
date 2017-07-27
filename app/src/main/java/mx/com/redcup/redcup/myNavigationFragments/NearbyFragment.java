@@ -8,16 +8,24 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import mx.com.redcup.redcup.Holders_extensions.EventsRecyclerHolder;
 import mx.com.redcup.redcup.R;
+import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
+
+import static android.content.ContentValues.TAG;
 
 public class NearbyFragment extends Fragment  {
 
@@ -41,6 +49,21 @@ public class NearbyFragment extends Fragment  {
         myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
         rv.setHasFixedSize(false);
 
+        //TODO: Change the recycleradapter to indexed recycler adapter. Indexes at Db/feeds
+
+        DatabaseReference indexRef = FirebaseDatabase.getInstance().getReference().child("Feeds").child(getCurrentFirebaseUID());
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+
+        RecyclerView.Adapter feedAdapter = new FirebaseIndexRecyclerAdapter<MyEvents,EventsRecyclerHolder>(
+        MyEvents.class, R.layout.recyclerrow_events, EventsRecyclerHolder.class, indexRef,dataRef) {
+            @Override
+            protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
+                viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
+                viewHolder.setContent(event.getEventName());
+                viewHolder.setProfilePic(event.getUserID());
+                viewHolder.setPostID(event.getEventID());
+            }
+        };
 
 
         //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
@@ -59,7 +82,7 @@ public class NearbyFragment extends Fragment  {
             }
         };
 
-        rv.setAdapter(adapter);
+        rv.setAdapter(feedAdapter);
 
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -81,6 +104,17 @@ public class NearbyFragment extends Fragment  {
 
         return rootView;
 
+    }
+
+    public String getCurrentFirebaseUID(){
+        String UID = "";
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            UID = user.getUid();
+        } else {
+            Log.e(TAG,"User is unexpectedly null.");
+        }
+        return UID;
     }
 
 }

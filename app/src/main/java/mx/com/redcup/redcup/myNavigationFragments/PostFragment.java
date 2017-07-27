@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +15,42 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-
+import com.google.firebase.database.ValueEventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyPosts;
 
+
 public class PostFragment extends Fragment {
+
+    private final Runnable updateFriendsFeedList = new Runnable() {
+        @Override
+        public void run() {
+            DatabaseReference friendsRef = mDatabase.child("Users_parent").child(getCurrentFirebaseUID()).child("userFriends");
+            friendsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        String friend = snapshot.getValue(String.class);
+                        DatabaseReference friendReference = mDatabase.child("Feeds").child(friend);
+                        friendReference.updateChildren(createdPost);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+        }
+    };
 
     private final Runnable revealAnimationRunnable = new Runnable() {
         @Override
@@ -84,6 +107,9 @@ public class PostFragment extends Fragment {
     Button sendPost;
     EditText postContent;
 
+    List<String> userFriends;
+    Map<String,Object> createdPost;
+
     int cx;
     int cy;
     int finalRadius;
@@ -91,6 +117,8 @@ public class PostFragment extends Fragment {
 
     Window window;
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+    DatabaseReference mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users_parent");
+    DatabaseReference mFeedReference = FirebaseDatabase.getInstance().getReference().child("Feeds");
 
 
     @Nullable
@@ -113,6 +141,18 @@ public class PostFragment extends Fragment {
                 String content = postContent.getText().toString();
                 String pushID = mDatabase.push().getKey();
                 MyPosts newPost = new MyPosts(content,getCurrentFirebaseUID(),pushID);
+
+                mDatabase.child(pushID).setValue(newPost);
+
+                //Update userPosts and feed list;
+                Map<String,Object> postAsList = new HashMap<>();
+                postAsList.put(pushID,pushID);
+
+                createdPost = postAsList;
+
+                mDatabaseUsers.child(getCurrentFirebaseUID()).child("user_posts").updateChildren(postAsList);
+                mFeedReference.child(getCurrentFirebaseUID()).updateChildren(postAsList);
+                updateFriendsFeedList.run();
             }
         });
 

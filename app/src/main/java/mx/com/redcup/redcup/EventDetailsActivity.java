@@ -86,7 +86,33 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public Double currentEventLng;
     public Boolean isEventLiked;
 
+    static String postID;
+
     public RecyclerView.Adapter commentAdapter;
+
+    private final Runnable updateFriendsFeedList = new Runnable() {
+        @Override
+        public void run() {
+            String currentFireUID = getCurrentFirebaseUID();
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Feeds").child(currentFireUID).child(postID);
+            eventRef.removeValue();
+            DatabaseReference friendsRef = mDatabase_users.child(currentFireUID).child("userFriends");
+            friendsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        String friend = snapshot.getValue(String.class);
+                        DatabaseReference friendReference = FirebaseDatabase.getInstance().getReference().child("Feeds").child(friend);
+                        friendReference.child(postID).removeValue();
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+        }
+    };
 
     View.OnClickListener openProfileDetails = new View.OnClickListener() {
         @Override
@@ -104,7 +130,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
         //Get the extra info passed on by previous activity. i.e the event id, so firebase data can be retrieved.
         Intent intent = getIntent();
-        final String postID = intent.getStringExtra("event_id");
+        postID = intent.getStringExtra("event_id");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -322,6 +348,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             public void onClick(View v) {
                 mDatabase_events.child(postID).removeValue();
                 mDatabase_users.child(authorUserID).child("user_posts").child(postID).removeValue();
+                updateFriendsFeedList.run();
                 extraEventOptions.dismiss();
             }
         });

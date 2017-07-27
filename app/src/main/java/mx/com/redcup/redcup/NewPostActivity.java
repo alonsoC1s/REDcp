@@ -48,18 +48,15 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        userFriends.add(snapshot.getValue(String.class));
+                        String friend = snapshot.getValue(String.class);
+                        DatabaseReference friendReference = mDatabase.child("Feeds").child(friend);
+                        friendReference.updateChildren(createdPost);
                     }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-
-            for (String friend: userFriends){
-                DatabaseReference friendReference = mDatabase.child("Feeds").child(friend);
-                friendReference.updateChildren(createdPost);
-            }
         }
     };
 
@@ -195,12 +192,13 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
         createdPost = postUpdate;
 
         mDatabase.child("Users_parent").child(userID).child("user_posts").updateChildren(postUpdate);
+        mDatabase.child("Feeds").child(userID).updateChildren(postUpdate);
 
         //End posting to database
         Toast.makeText(getApplicationContext(),"Post created!",Toast.LENGTH_SHORT).show();
 
-        //TODO: Push the PID to the feed list of the users friends:
-        // i.e Get friend's UID from friend_list, and iterate through them, adding PID to their feed list
+
+        updateFriendsFeedList.run();
 
         returnToMap();
 
