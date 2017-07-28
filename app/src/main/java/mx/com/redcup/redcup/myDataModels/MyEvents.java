@@ -67,6 +67,8 @@ public class MyEvents {
     public String getEventHour(){ return ( String.valueOf(eventDate.getHour() % 12)); }
     public String getEventMinutes(){ return String.valueOf(eventDate.getMinutes());}
 
+    public String getContentType(){ return  this.contentType;}
+
 
     @Exclude
     public Map<String,AttendanceStatus> toMap(){

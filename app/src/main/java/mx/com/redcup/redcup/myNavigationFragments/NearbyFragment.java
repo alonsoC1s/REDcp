@@ -34,9 +34,6 @@ public class NearbyFragment extends Fragment  {
 
     LinearLayout myContainer;
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -47,6 +44,11 @@ public class NearbyFragment extends Fragment  {
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view);
         createPost = (FloatingActionButton) rootView.findViewById(R.id.fab_create_post);
         myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
+
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
+
         rv.setHasFixedSize(false);
 
         //TODO: Change the recycleradapter to indexed recycler adapter. Indexes at Db/feeds
@@ -60,32 +62,15 @@ public class NearbyFragment extends Fragment  {
             protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
                 viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
                 viewHolder.setContent(event.getEventName());
-                viewHolder.setProfilePic(event.getUserID());
                 viewHolder.setPostID(event.getEventID());
-            }
-        };
-
-
-        //Using Firebase-UI library: FirebaseAdapter to create a recycler view getting data straight from firebase
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
-        // TODO Filter the events and show only those at a certain distance
-        RecyclerView.Adapter adapter = new FirebaseRecyclerAdapter<MyEvents, EventsRecyclerHolder>(
-                MyEvents.class, R.layout.recyclerrow_events, EventsRecyclerHolder.class, mDatabase) {
-            @Override
-            protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
-
-                viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
-                viewHolder.setContent(event.getEventName());
-                viewHolder.setProfilePic(event.getUserID());
-                viewHolder.setPostID(event.getEventID());
-
+                if (event.getContentType().equals("Event")) {
+                    viewHolder.setProfilePic(event.getUserID());
+                }
             }
         };
 
         rv.setAdapter(feedAdapter);
 
-
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(llm);
 
 

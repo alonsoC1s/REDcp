@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/colorAccent"
-    android:visibility="invisible"
     android:id="@+id/container_newpost"
+    android:visibility="invisible"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/container_title"
         android:padding="8dp"
         android:orientation="horizontal"
@@ -15,20 +15,20 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
-            android:inputType="text"
             android:textSize="20sp"
             android:textColor="@color/white"
             android:text="Post to Redcupa"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Button
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
             android:id="@+id/btn_newpost_send"
-            android:layout_gravity="right"
-            android:text="Post"
+            android:background="@drawable/ic_menu_send"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_below="@id/container_title"
@@ -42,17 +42,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_weight="1"
-        android:padding="8dp"
+    <HorizontalScrollView
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp" />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_prompt_camera"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
+        <Button
+            android:id="@+id/btn_prompt_gallery"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_gallery"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </HorizontalScrollView>
 
-</LinearLayout>
+</RelativeLayout>

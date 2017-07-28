@@ -195,7 +195,7 @@ public class NewPostActivity extends AppCompatActivity implements DatePickerDial
         mDatabase.child("Feeds").child(userID).updateChildren(postUpdate);
 
         //End posting to database
-        Toast.makeText(getApplicationContext(),"Post created!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Event created!",Toast.LENGTH_SHORT).show();
 
 
         updateFriendsFeedList.run();

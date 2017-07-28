@@ -350,6 +350,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 mDatabase_users.child(authorUserID).child("user_posts").child(postID).removeValue();
                 updateFriendsFeedList.run();
                 extraEventOptions.dismiss();
+                EventDetailsActivity.super.onBackPressed();
             }
         });
 
@@ -409,11 +410,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 .start(this);
     }
 
-    public void setUserData(String uID){
-        Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
-                .load(mStorage.child(uID).child("profile_picture")).signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                .into(authorPic);
-
+    public void setUserData(String uID, Boolean dataIsEvent){
         mDatabase_users.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -421,10 +418,17 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 authorName.setText(user.getDisplayName());
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        if (dataIsEvent) {
+            Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                    .load(mStorage.child(uID).child("profile_picture")).signature(new StringSignature(uID))
+                    .into(authorPic);
+        }
     }
 
     public void populateActivityData(String postID){
@@ -441,9 +445,13 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 postContent.setText(event.getEventContent());
                 toolbarTitle.setTitle(event.getEventName());
                 authorName.setText(event.getUserID());
-                setUserData(event.getUserID());
-                String time = (event.getEventHour() + ":" + event.getEventMinutes() + " pm" );
-                displayTime.setText(time);
+                Boolean eventType = Boolean.valueOf(event.getContentType().equals("Event")); // True if event, false if post
+
+                setUserData(event.getUserID(),eventType);
+                if (eventType){
+                    String time = (event.getEventHour() + ":" + event.getEventMinutes() + " pm" );
+                    displayTime.setText(time);
+                }
 
                 if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){
                     faveEvent.setBackground(red_heart);

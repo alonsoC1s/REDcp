@@ -27,6 +27,31 @@ public class MyPosts extends MyEvents {
 
         this.contentType = "Post";
 
+        eventDate = null;
+        eventLatitude = null;
+        eventLongitude = null;
     }
 
+    @Override
+    public String getEventMinutes() {return null;}
+    @Override
+    public String getEventHour() {return null;}
+    @Override
+    public Double getEventLatitude() {return null;}
+    @Override
+    public Double getEventLongitude() {return null;}
+    @Override
+    public String getEventName() {return null;}
+    @Override
+    public String getContentType() {return this.contentType;}
+
+    @Override
+    public String getEventID() {return this.eventID;}
+    @Override
+    public String getUserID() {return this.userID;}
+
+    @Override
+    public String getEventContent() {
+        return this.eventContent;
+    }
 }

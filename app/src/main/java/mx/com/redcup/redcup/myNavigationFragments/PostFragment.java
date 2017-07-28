@@ -15,6 +15,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -76,7 +79,7 @@ public class PostFragment extends Fragment {
     };
 
 
-    LinearLayout myContainer;
+    RelativeLayout myContainer;
     Button sendPost;
     EditText postContent;
 
@@ -87,20 +90,20 @@ public class PostFragment extends Fragment {
     int finalRadius;
 
     Window window;
-    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Events_parent");
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     DatabaseReference mFeedReference = FirebaseDatabase.getInstance().getReference().child("Feeds");
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newpost_screen, container, false);
 
         window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        myContainer = (LinearLayout) view.findViewById(R.id.container_newpost);
+        myContainer = (RelativeLayout) view.findViewById(R.id.container_newpost);
         sendPost = (Button) view.findViewById(R.id.btn_newpost_send);
         postContent = (EditText) view.findViewById(R.id.et_newpost_postcontent);
 
@@ -111,38 +114,40 @@ public class PostFragment extends Fragment {
             public void onClick(View v) {
                 String content = postContent.getText().toString();
                 String pushID = mDatabase.push().getKey();
-                MyPosts newPost = new MyPosts(content,getCurrentFirebaseUID(),pushID);
 
-                mDatabase.child(pushID).setValue(newPost);
-
-                //Update userPosts and feed list;
-                Map<String,Object> postAsList = new HashMap<>();
-                postAsList.put(pushID,pushID);
-
-                createdPost = postAsList;
-
-                mDatabaseUsers.child(getCurrentFirebaseUID()).child("user_posts").updateChildren(postAsList);
-                mFeedReference.child(getCurrentFirebaseUID()).updateChildren(postAsList);
-                updateFriendsFeedList.run();
+                createPost(content,pushID, getCurrentFirebaseUID());
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
+    }
+
+    public void createPost(String content, String pushID, String authorUID){
+        Log.e("alksdfjla;s","IS it working");
+        MyPosts newPost = new MyPosts(content,authorUID,pushID);
+
+        mDatabase.child("Events_parent").child(pushID).setValue(newPost);
+
+        //Update userPosts and feed list;
+        Map<String,Object> postAsList = new HashMap<>();
+        postAsList.put(pushID,pushID);
+
+        createdPost = postAsList;
+
+        mDatabaseUsers.child(getCurrentFirebaseUID()).child("user_posts").updateChildren(postAsList);
+        mFeedReference.child(getCurrentFirebaseUID()).updateChildren(postAsList);
+        updateFriendsFeedList.run();
+
+        getFragmentManager().popBackStack();
+        Toast.makeText(getActivity(),"Post created!",Toast.LENGTH_SHORT).show();
     }
 
     public String getCurrentFirebaseUID(){

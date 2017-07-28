@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="mx.com.redcup.redcup.EventDetailsActivity"
     tools:showIn="@layout/activity_event_details"
@@ -22,7 +21,7 @@
         <android.support.v7.widget.CardView
             android:elevation="0dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -111,24 +110,19 @@
                         android:layout_height="20dp" />
 
                 </LinearLayout>
-
             </LinearLayout>
+
 
         </android.support.v7.widget.CardView>
 
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
             android:paddingTop="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:nestedScrollingEnabled="true"
+            android:id="@+id/rv_eventdetails_comments"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_eventdetails_comments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </FrameLayout>
 
     </LinearLayout>
 
