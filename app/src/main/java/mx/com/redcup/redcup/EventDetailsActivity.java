@@ -80,6 +80,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     com.github.clans.fab.FloatingActionButton fabConfirmAttendance;
     com.github.clans.fab.FloatingActionButton fabDeclineAttendance;
     com.github.clans.fab.FloatingActionButton fabMaybeAttendance;
+    Toolbar toolbar;
 
     public String authorUserID;
     public Double currentEventLat;
@@ -132,12 +133,12 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         Intent intent = getIntent();
         postID = intent.getStringExtra("event_id");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Get handle of UI elements
         postContent = (TextView) findViewById(R.id.tv_EventDetails_event_contentn);
-        toolbarTitle = (CollapsingToolbarLayout) findViewById(R.id.ct_eventdetails_title);
+        //toolbarTitle = (CollapsingToolbarLayout) findViewById(R.id.ct_eventdetails_title);
         floatingMenu = (FloatingActionMenu) findViewById(R.id.fam_attendance_status);
         fabConfirmAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_confirm);
         fabDeclineAttendance = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fab_decline);
@@ -443,7 +444,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 currentEventLng = event.getEventLongitude();
 
                 postContent.setText(event.getEventContent());
-                toolbarTitle.setTitle(event.getEventName());
+                toolbar.setTitle(event.getEventName());
                 authorName.setText(event.getUserID());
                 Boolean eventType = Boolean.valueOf(event.getContentType().equals("Event")); // True if event, false if post
 

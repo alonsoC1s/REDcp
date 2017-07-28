@@ -7,11 +7,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:showIn="@layout/fragment_nearby"
-    tools:context="mx.com.redcup.redcup.myNavigationFragments.FriendsFragment">
+    tools:context="mx.com.redcup.redcup.myNavigationFragments.NearbyFragment">
 
 
     <android.support.v7.widget.RecyclerView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:nestedScrollingEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rv_recycler_view"
