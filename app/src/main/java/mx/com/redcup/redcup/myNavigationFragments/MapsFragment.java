@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -75,7 +76,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     BottomSheetBehavior bottomSheetBehavior;
     TextView bottomSheetTitle;
     TextView bottomSheetContent;
-    FrameLayout eventNamecontainer;
+    LinearLayout eventNamecontainer;
     ImageView cardAuthorPic;
     TextView cardAuthorName;
     Button gotoEventDetails;
@@ -187,7 +188,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
         bottomSheetTitle = (TextView) view.findViewById(R.id.tv_modalsheet_title);
         bottomSheetContent = (TextView) view.findViewById(R.id.tv_modalsheet_content);
-        eventNamecontainer = (FrameLayout) view.findViewById(R.id.header_container);
+        eventNamecontainer = (LinearLayout) view.findViewById(R.id.header_container);
         cardAuthorPic = (ImageView) view.findViewById(R.id.card_authorPic);
         cardAuthorName = (TextView) view.findViewById(R.id.card_authorName);
         gotoEventDetails = (Button) view.findViewById(R.id.btn_goto_eventdetails);

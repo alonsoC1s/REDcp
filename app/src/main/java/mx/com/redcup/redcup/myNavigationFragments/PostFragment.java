@@ -82,6 +82,8 @@ public class PostFragment extends Fragment {
     RelativeLayout myContainer;
     Button sendPost;
     EditText postContent;
+    Button openCamera;
+    Button openGallery;
 
     Map<String,Object> createdPost;
 
@@ -106,6 +108,8 @@ public class PostFragment extends Fragment {
         myContainer = (RelativeLayout) view.findViewById(R.id.container_newpost);
         sendPost = (Button) view.findViewById(R.id.btn_newpost_send);
         postContent = (EditText) view.findViewById(R.id.et_newpost_postcontent);
+        openCamera = (Button) view.findViewById(R.id.btn_prompt_camera);
+        openGallery = (Button) view.findViewById(R.id.btn_prompt_gallery);
 
         myContainer.post(revealAnimationRunnable);
 
