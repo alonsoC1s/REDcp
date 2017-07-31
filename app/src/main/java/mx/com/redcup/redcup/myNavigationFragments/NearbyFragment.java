@@ -5,11 +5,17 @@ package mx.com.redcup.redcup.myNavigationFragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -27,7 +33,7 @@ import mx.com.redcup.redcup.myDataModels.MyEvents;
 
 import static android.content.ContentValues.TAG;
 
-public class NearbyFragment extends Fragment  {
+public class NearbyFragment extends Fragment {
 
     public DatabaseReference mDatabase;
     FloatingActionButton createPost;
@@ -39,11 +45,11 @@ public class NearbyFragment extends Fragment  {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_nearby, container, false);
 
-
         // Getting handle of the Recycler view on the layout
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view);
         createPost = (FloatingActionButton) rootView.findViewById(R.id.fab_create_post);
         myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
+
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setReverseLayout(true);
@@ -73,8 +79,6 @@ public class NearbyFragment extends Fragment  {
 
         rv.setLayoutManager(llm);
 
-
-
         createPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,10 +90,9 @@ public class NearbyFragment extends Fragment  {
             }
         });
 
-
         return rootView;
-
     }
+
 
     public String getCurrentFirebaseUID(){
         String UID = "";
@@ -101,5 +104,6 @@ public class NearbyFragment extends Fragment  {
         }
         return UID;
     }
+
 
 }
