@@ -21,6 +21,7 @@
             android:layout_height="?attr/actionBarSize">
 
             <SearchView
+                android:id="@+id/searchbar"
                 android:gravity="right"
                 android:queryHint="Search for people and events"
                 android:layout_width="wrap_content"

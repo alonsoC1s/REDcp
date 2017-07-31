@@ -48,7 +48,6 @@
 
                 <TextView
                     android:textColor="@color/white"
-                    android:text="This many likes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,17 +27,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import mx.com.redcup.redcup.Holders_extensions.EventsRecyclerHolder;
+import mx.com.redcup.redcup.NavActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyEventComments;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
-
 import static android.content.ContentValues.TAG;
 
 public class NearbyFragment extends Fragment {
 
     public DatabaseReference mDatabase;
     FloatingActionButton createPost;
-
+    android.widget.SearchView searchBar;
     LinearLayout myContainer;
 
     @Override
@@ -49,7 +49,7 @@ public class NearbyFragment extends Fragment {
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view);
         createPost = (FloatingActionButton) rootView.findViewById(R.id.fab_create_post);
         myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
-
+        searchBar = (SearchView) rootView.findViewById(R.id.searchbar);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setReverseLayout(true);
@@ -87,6 +87,12 @@ public class NearbyFragment extends Fragment {
                 FragmentTransaction fm = getFragmentManager().beginTransaction().add(R.id.Nav_activity_content, map).addToBackStack("Fragment");
                 fm.commit();
 
+            }
+        });
+
+        searchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
             }
         });
 
