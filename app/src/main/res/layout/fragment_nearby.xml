@@ -13,7 +13,9 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         android:fitsSystemWindows="true"
         >
+
         <Toolbar
+            android:background="@color/transparent"
             android:title="Feed"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:layout_collapseMode="pin"
@@ -26,9 +28,11 @@
                 android:queryHint="Search for people and events"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </Toolbar>
-    </android.support.design.widget.AppBarLayout>
 
+        </Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_create_post"

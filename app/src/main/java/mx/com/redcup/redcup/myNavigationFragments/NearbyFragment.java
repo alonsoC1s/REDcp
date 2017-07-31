@@ -90,6 +90,7 @@ public class NearbyFragment extends Fragment {
             }
         });
 
+
         searchBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
