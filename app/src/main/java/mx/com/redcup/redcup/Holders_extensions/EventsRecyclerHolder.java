@@ -2,6 +2,8 @@ package mx.com.redcup.redcup.Holders_extensions;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +32,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
     private final TextView mEventName;
     private final TextView mEventContent;
     private final ImageView mProfilePic;
+    private final ImageView eventPicture;
 
     public String eventID;
 
@@ -44,6 +49,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
         mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
         mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
         mCard = (CardView) itemView.findViewById(R.id.card_view);
+        eventPicture = (ImageView) itemView.findViewById(R.id.iv_event_picture);
 
         context = itemView.getContext();
 
@@ -81,6 +87,23 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+    public void displayEventImage(final String pID){
+        mStorage.child(pID).child(pID).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                eventPicture.setVisibility(View.VISIBLE);
+                Glide.with(context).using(new FirebaseImageLoader()).load(mStorage.child(pID).child(pID))
+                        .signature(new StringSignature(pID)).into(eventPicture);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                eventPicture.setVisibility(View.GONE);
             }
         });
 

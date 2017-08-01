@@ -62,6 +62,7 @@
             </LinearLayout>
 
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -73,6 +74,10 @@
                         android:textSize="20sp"
                         android:layout_margin="@dimen/text_margin"
                         tools:layout_editor_absoluteX="15dp" />
+                    <ImageView
+                        android:id="@+id/iv_eventdetails_embedpic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

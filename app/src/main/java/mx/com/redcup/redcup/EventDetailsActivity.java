@@ -81,6 +81,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     com.github.clans.fab.FloatingActionButton fabDeclineAttendance;
     com.github.clans.fab.FloatingActionButton fabMaybeAttendance;
     Toolbar toolbar;
+    ImageView embeddedPic;
 
     public String authorUserID;
     public Double currentEventLat;
@@ -153,6 +154,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         commentInputField = (EditText) findViewById(R.id.et_eventdetails_commentfield);
         commentSendButton = (Button) findViewById(R.id.btn_eventdetails_sendcomment);
         commentsRecyclerView = (RecyclerView) findViewById(R.id.rv_eventdetails_comments);
+        embeddedPic = (ImageView) findViewById(R.id.iv_eventdetails_embedpic);
 
         blue_heart = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
         red_heart = getResources().getDrawable(R.drawable.ic_favorite_red);
@@ -432,7 +434,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         }
     }
 
-    public void populateActivityData(String postID){
+    public void populateActivityData(final String postID){
         DatabaseReference queryPoint = mDatabase_events.child(postID);
         queryPoint.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -452,6 +454,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
                 if (eventType){
                     String time = (event.getEventHour() + ":" + event.getEventMinutes() + " pm" );
                     displayTime.setText(time);
+                } else{
+                    Glide.with(getApplicationContext()).using(new FirebaseImageLoader()).load(mStorage.child(postID).child(postID))
+                            .signature(new StringSignature(postID)).into(embeddedPic);
                 }
 
                 if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){

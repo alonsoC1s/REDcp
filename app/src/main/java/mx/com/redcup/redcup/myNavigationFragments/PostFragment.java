@@ -3,7 +3,11 @@ package mx.com.redcup.redcup.myNavigationFragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
+import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,21 +18,32 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.HashMap;
 import java.util.Map;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.MyPosts;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class PostFragment extends Fragment {
@@ -84,8 +99,10 @@ public class PostFragment extends Fragment {
     EditText postContent;
     Button openCamera;
     Button openGallery;
+    ImageView postImage;
 
     Map<String,Object> createdPost;
+    String createdPostID;
 
     int cx;
     int cy;
@@ -95,6 +112,7 @@ public class PostFragment extends Fragment {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users_parent");
     DatabaseReference mFeedReference = FirebaseDatabase.getInstance().getReference().child("Feeds");
+    StorageReference mStorage = FirebaseStorage.getInstance().getReference();
 
 
     @Nullable
@@ -110,6 +128,7 @@ public class PostFragment extends Fragment {
         postContent = (EditText) view.findViewById(R.id.et_newpost_postcontent);
         openCamera = (Button) view.findViewById(R.id.btn_prompt_camera);
         openGallery = (Button) view.findViewById(R.id.btn_prompt_gallery);
+        postImage = (ImageView) view.findViewById(R.id.iv_eventpic_postscreen);
 
         myContainer.post(revealAnimationRunnable);
 
@@ -119,7 +138,25 @@ public class PostFragment extends Fragment {
                 String content = postContent.getText().toString();
                 String pushID = mDatabase.push().getKey();
 
+                createdPostID = pushID;
                 createPost(content,pushID, getCurrentFirebaseUID());
+            }
+        });
+
+        openCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, 2);
+            }
+        });
+
+        openGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent,1);
             }
         });
 
@@ -131,7 +168,6 @@ public class PostFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-
     }
 
     public void createPost(String content, String pushID, String authorUID){
@@ -152,6 +188,17 @@ public class PostFragment extends Fragment {
 
         getFragmentManager().popBackStack();
         Toast.makeText(getActivity(),"Post created!",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent returnedImage){
+        if (resultCode == RESULT_OK){
+            StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/png").setContentEncoding("png").build();
+            Uri imageUri = returnedImage.getData();
+            mStorage.child(createdPostID).child(createdPostID).putFile(imageUri,metadata);
+            Glide.with(getActivity()).using(new FirebaseImageLoader()).load(mStorage.child(createdPostID).child(createdPostID))
+                    .signature(new StringSignature(createdPostID)).into(postImage);
+        }
     }
 
     public String getCurrentFirebaseUID(){
