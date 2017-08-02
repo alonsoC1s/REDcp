@@ -90,6 +90,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     ImageView cardAuthorPic;
     TextView cardAuthorName;
     Button gotoEventDetails;
+    TextView likeCounter;
 
     LatLng mDefaultLocation = new LatLng(0, 0);
     Location mCurrentLocation;
@@ -234,6 +235,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         cardAuthorPic = (ImageView) view.findViewById(R.id.card_authorPic);
         cardAuthorName = (TextView) view.findViewById(R.id.card_authorName);
         gotoEventDetails = (Button) view.findViewById(R.id.btn_goto_eventdetails);
+        likeCounter = (TextView) view.findViewById(R.id.tv_modalsheet_likecount);
         //
         favEvent = (Button) view.findViewById(R.id.btn_modalsheet_fav);
         shareEvent = (Button) view.findViewById(R.id.btn_modalsheet_share);
@@ -380,7 +382,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyEvents newEvent = dataSnapshot.getValue(MyEvents.class);
+
                 bottomSheetContent.setText(newEvent.getEventContent());
+                Long nOfLikes = dataSnapshot.child("likes").getChildrenCount();
+                if (nOfLikes != 1) {
+                    String likes = String.valueOf(dataSnapshot.child("likes").getChildrenCount()) + " Likes";
+                    likeCounter.setText(likes);
+                }else{
+                    String likes = String.valueOf(dataSnapshot.child("likes").getChildrenCount()) + " Like";
+                    likeCounter.setText(likes);
+                }
+
                 getAuthorDataOnMarkerClick(newEvent.getUserID());
 
                 if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){
