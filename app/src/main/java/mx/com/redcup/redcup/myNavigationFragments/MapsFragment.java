@@ -2,12 +2,16 @@ package mx.com.redcup.redcup.myNavigationFragments;
 
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,10 +28,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -55,6 +61,7 @@ import java.util.Map;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import mx.com.redcup.redcup.EventDetailsActivity;
+import mx.com.redcup.redcup.Holders_extensions.BottomSheetInviteFriends;
 import mx.com.redcup.redcup.NewPostActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
@@ -72,6 +79,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     DatabaseReference mDataBase_users;
     StorageReference mStor;
 
+    Drawable red_heart;
+    Drawable blue_heart;
+
     FloatingActionButton fabNewEvent;
     BottomSheetBehavior bottomSheetBehavior;
     TextView bottomSheetTitle;
@@ -87,6 +97,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     //Variables for holding the event id and others from the currently clicked marker
     String currentMarkerEventID;
     String currentMarkerEventName;
+    String currentMarkerAuthorID;
+    Boolean isEventLiked;
+
+    //UI bindings for the modalsheet
+    Button favEvent;
+    Button shareEvent;
+    Button inviteFriends;
+    Button menuMore;
+
+    private final Runnable updateFriendsFeedList = new Runnable() {
+        @Override
+        public void run() {
+            String currentFireUID = getCurrentFirebaseUID();
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child("Feeds").child(currentFireUID).child(currentMarkerEventID);
+            eventRef.removeValue();
+            DatabaseReference friendsRef = mDataBase_users.child(currentFireUID).child("userFriends");
+            friendsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        String friend = snapshot.getValue(String.class);
+                        DatabaseReference friendReference = FirebaseDatabase.getInstance().getReference().child("Feeds").child(friend);
+                        friendReference.child(currentMarkerEventID).removeValue();
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+        }
+    };
 
     //Create custom listners
     View.OnClickListener fabClickExpanded = new View.OnClickListener() {
@@ -192,12 +234,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         cardAuthorPic = (ImageView) view.findViewById(R.id.card_authorPic);
         cardAuthorName = (TextView) view.findViewById(R.id.card_authorName);
         gotoEventDetails = (Button) view.findViewById(R.id.btn_goto_eventdetails);
+        //
+        favEvent = (Button) view.findViewById(R.id.btn_modalsheet_fav);
+        shareEvent = (Button) view.findViewById(R.id.btn_modalsheet_share);
+        inviteFriends = (Button) view.findViewById(R.id.btn_modalsheet_invite);
+        menuMore = (Button) view.findViewById(R.id.btn_modalsheet_more);
 
         //Get colors and drawables
         handIcon = R.drawable.ic_attend;
         black = getResources().getColor(R.color.black);
         red = getResources().getColor(R.color.colorPrimary);
         white = getResources().getColor(R.color.white);
+        blue_heart = getResources().getDrawable(R.drawable.ic_favorite_black_24dp);
+        red_heart = getResources().getDrawable(R.drawable.ic_favorite_red);
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setBottomSheetCallback(bottomFragmentCallback);
@@ -205,6 +254,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         fabNewEvent.setOnClickListener(fabClickCollapsed);
         gotoEventDetails.setOnClickListener(startEventDetails);
 
+        favEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {faveThisEvent(currentMarkerEventID,v);}
+        });
+        shareEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {shareThisEvent(currentMarkerEventID,v);}
+        });
+        inviteFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {inviteFriend(currentMarkerEventID,v);}
+        });
+        menuMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {openMoreMenu(currentMarkerEventID,v);}
+        });
 
         return view;
 
@@ -271,7 +336,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     void getCurrentLocation() {
-
         SmartLocation.with(getActivity()).location().start(new OnLocationUpdatedListener() {
             @Override
             public void onLocationUpdated(Location location) {
@@ -310,6 +374,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    //Functions called to fill in modalsheet details
     public void getEventDataOnMarkerClick(final String eventId){
         mDataBase_events.child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -318,6 +383,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 bottomSheetContent.setText(newEvent.getEventContent());
                 getAuthorDataOnMarkerClick(newEvent.getUserID());
 
+                if (dataSnapshot.child("likes").child(getCurrentFirebaseUID()).exists()){
+                    favEvent.setBackground(red_heart);
+                    isEventLiked = true;
+                }else {
+                    favEvent.setBackground(blue_heart);
+                    isEventLiked = false;
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -331,12 +403,115 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyUsers newUser = dataSnapshot.getValue(MyUsers.class);
                 cardAuthorName.setText(newUser.getDisplayName());
+                currentMarkerAuthorID = newUser.getFirebaseUID();
                 Glide.with(getActivity()).using(new FirebaseImageLoader()).load(mStor.child(authorUID).child("profile_picture"))
                         .signature(new StringSignature(authorUID)).into(cardAuthorPic);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    //Functions for the buttons on card
+    public void faveThisEvent(String postID, View view){
+        String currentUID = getCurrentFirebaseUID();
+        DatabaseReference user1_friendsRef = mDataBase_events.child(postID).child("likes"); //Author ref
+
+        if ( !isEventLiked) {//Liked for the first time
+            //Marking the user liked the post
+            Map<String, Object> newLike = new HashMap<>();
+            newLike.put(currentUID, currentUID);
+
+            user1_friendsRef.updateChildren(newLike);
+            favEvent.setBackground(red_heart);
+            isEventLiked = true;
+        } else {
+            user1_friendsRef.child(currentUID).removeValue();
+            favEvent.setBackground(blue_heart);
+            isEventLiked = false;
+        }
+    }
+
+    public void shareThisEvent(String postID, View view){
+        Intent intent = new AppInviteInvitation.IntentBuilder("Invite all your friends")
+                .setMessage("I will be going out tonight, join me. Here is the event info")
+                .setDeepLink(Uri.parse("https://cb8v7.app.goo.gl/jTpt"))
+                .build();
+
+        startActivityForResult(intent,3);
+    }
+
+    public void inviteFriend(String postID, View view){
+        //TODO: Promopt bottom modal fragment and show autocomplete list of user's friends, then send a notification to invitee
+        String currentUID = getCurrentFirebaseUID();
+        Bundle extras = new Bundle();
+        extras.putString("userID",currentUID);
+        extras.putString("postID",postID);
+
+        BottomSheetInviteFriends dialogFragment = new BottomSheetInviteFriends();
+        dialogFragment.setArguments(extras);
+
+        Toast.makeText(getActivity(),"Still in development",Toast.LENGTH_LONG).show();
+    }
+
+    public void openMoreMenu(final String postID, final View view){
+
+        final Dialog extraEventOptions = new Dialog(getActivity());
+        extraEventOptions.setContentView(R.layout.dialog_event_options);
+
+        Button editEvent = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_edit);
+        Button deleteEvent = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_delete);
+        Button addAuthorAsFriend = (Button) extraEventOptions.findViewById(R.id.btn_eventdialog_addFriend);
+
+        if (getCurrentFirebaseUID().equals(getCurrentFirebaseUID())){
+            addAuthorAsFriend.setVisibility(View.GONE);
+        }else {
+            editEvent.setEnabled(false);
+            deleteEvent.setEnabled(false);
+        }
+
+        extraEventOptions.show();
+
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v,"not yet functional", Toast.LENGTH_SHORT).show();
+                extraEventOptions.dismiss();
+            }
+        });
+
+        deleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDataBase_events.child(postID).removeValue();
+                mDataBase_users.child(getCurrentFirebaseUID()).child("user_posts").child(postID).removeValue();
+                updateFriendsFeedList.run();
+                extraEventOptions.dismiss();
+            }
+        });
+
+        addAuthorAsFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentUID = getCurrentFirebaseUID();
+                DatabaseReference user1_friendsRef = mDataBase_users.child(currentMarkerAuthorID).child("userFriends"); //Author ref
+                DatabaseReference user2_friendsRef = mDataBase_users.child(currentUID).child("userFriends"); // Viewer ref
+
+                //For author
+                Map<String, Object> userFiend = new HashMap<>();
+                userFiend.put(currentUID,currentUID);
+
+                //For viewer
+                Map<String, Object> newFriend = new HashMap<>();
+                newFriend.put(currentMarkerAuthorID,currentMarkerAuthorID);
+
+                user1_friendsRef.updateChildren(userFiend);
+                user2_friendsRef.updateChildren(newFriend);
+
+                Snackbar.make(view, "You just made a new friend!", Snackbar.LENGTH_SHORT).show();
+                extraEventOptions.dismiss();
             }
         });
     }
