@@ -16,12 +16,12 @@
         android:elevation="5dp"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
@@ -98,6 +98,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:layout_marginTop="5dp"
                 android:gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal"
@@ -107,28 +108,28 @@
             <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:id="@+id/btn_eventdetails_fav"
+                android:id="@+id/btn_modalsheet_fav"
                 android:background="@drawable/ic_favorite_black_24dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp" />
             <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:id="@+id/btn_eventdetails_share"
+                android:id="@+id/btn_modalsheet_share"
                 android:background="@drawable/ic_share_black_24dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp" />
             <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:id="@+id/btn_eventdetails_invite"
+                android:id="@+id/btn_modalsheet_invite"
                 android:background="@drawable/ic_person_add"
                 android:layout_width="20dp"
                 android:layout_height="20dp" />
             <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:id="@+id/btn_eventdetails_more"
+                android:id="@+id/btn_modalsheet_more"
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:background="@drawable/ic_more_vert"
@@ -141,11 +142,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <Button
+                    android:textSize="12sp"
                     android:id="@+id/btn_goto_eventdetails"
                     android:textAllCaps="false"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="34dp"
                     android:text="See event details..." />
             </LinearLayout>
 
