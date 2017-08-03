@@ -1,9 +1,12 @@
 package mx.com.redcup.redcup.Holders_extensions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -29,8 +32,8 @@ import mx.com.redcup.redcup.myDataModels.MyUsers;
 
 
 public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
-    private final TextView mEventName;
-    private final TextView mEventContent;
+    private final TextView eventContent;
+    private final TextView eventTitle;
     private final ImageView mProfilePic;
     private final ImageView eventPicture;
 
@@ -45,8 +48,8 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
 
     public EventsRecyclerHolder(View itemView) {
         super(itemView);
-        mEventName = (TextView)itemView.findViewById(R.id.tv_event_content);
-        mEventContent = (TextView) itemView.findViewById(R.id.tv_event_title);
+        eventContent = (TextView)itemView.findViewById(R.id.tv_event_content);
+        eventTitle = (TextView) itemView.findViewById(R.id.tv_event_title);
         mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
         mCard = (CardView) itemView.findViewById(R.id.card_view);
         eventPicture = (ImageView) itemView.findViewById(R.id.iv_event_picture);
@@ -59,7 +62,13 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Intent intent = new Intent(context,EventDetailsActivity.class);
                 intent.putExtra("event_id",eventID);
-                context.startActivity(intent);
+
+                Pair<View, String> authorPicAnim = Pair.create((View)mProfilePic, "authorPic");
+                Pair<View,String> eventTitleAnim = Pair.create((View) eventTitle,"eventTitle");
+                //Pair<View,String> eventContentAnim = Pair.create((View) eventContent,"eventContent");
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity)context, authorPicAnim, eventTitleAnim);
+                context.startActivity(intent, options.toBundle());
             }
         });
 
@@ -67,11 +76,11 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
 
 
     public void setTitle(String title){
-        mEventName.setText(title);
+        eventTitle.setText(title);
     }
 
     public void setContent(String content){
-        mEventContent.setText(content);
+        eventContent.setText(content);
     }
 
     public void setProfilePic(final String uID){

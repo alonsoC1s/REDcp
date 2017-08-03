@@ -30,15 +30,16 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textSize="25dp"
+                android:transitionName="eventTitle"
                 android:ellipsize="end"
                 android:id="@+id/tv_event_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:fontFamily="sans-serif"
-                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="25dp"/>
+                />
 
         </LinearLayout>
 
@@ -48,6 +49,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:transitionName="authorPic"
                 android:id="@+id/iv_fb_userpic"
                 android:scaleType="centerInside"
                 android:layout_width="60dp"
@@ -59,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <TextView
+                android:transitionName="eventContent"
                 android:layout_margin="5dp"
                 android:ellipsize="end"
                 android:id="@+id/tv_event_content"
@@ -67,7 +70,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/iv_fb_userpic"
                 android:maxLines="6"
-                android:textSize="15dp"
+                android:textSize="20sp"
                 android:layout_alignParentRight="true"
                 />
                 <ImageView

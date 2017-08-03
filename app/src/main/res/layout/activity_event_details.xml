@@ -15,8 +15,9 @@
         android:fitsSystemWindows="true"
         >
         <android.support.v7.widget.Toolbar
+            android:textSize="25dp"
+            android:transitionName="eventTitle"
             android:id="@+id/toolbar"
-            android:title="Event"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:layout_collapseMode="pin"
             android:layout_width="match_parent"

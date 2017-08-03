@@ -37,7 +37,6 @@ public class NearbyFragment extends Fragment {
 
     public DatabaseReference mDatabase;
     FloatingActionButton createPost;
-    android.widget.SearchView searchBar;
     LinearLayout myContainer;
 
     @Override
@@ -49,7 +48,6 @@ public class NearbyFragment extends Fragment {
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view);
         createPost = (FloatingActionButton) rootView.findViewById(R.id.fab_create_post);
         myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
-        searchBar = (SearchView) rootView.findViewById(R.id.searchbar);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setReverseLayout(true);
@@ -66,8 +64,8 @@ public class NearbyFragment extends Fragment {
         MyEvents.class, R.layout.recyclerrow_events, EventsRecyclerHolder.class, indexRef,dataRef) {
             @Override
             protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
-                viewHolder.setTitle(event.getEventContent()); //Note: This switching is on purpose. Content and title were mixed somewhere
-                viewHolder.setContent(event.getEventName());
+                viewHolder.setContent(event.getEventContent());
+                viewHolder.setTitle(event.getEventName());
                 viewHolder.setPostID(event.getEventID());
                 if (event.getContentType().equals("Event")) {
                     viewHolder.setProfilePic(event.getUserID());
@@ -89,13 +87,6 @@ public class NearbyFragment extends Fragment {
                 FragmentTransaction fm = getFragmentManager().beginTransaction().add(R.id.Nav_activity_content, map).addToBackStack("Fragment");
                 fm.commit();
 
-            }
-        });
-
-
-        searchBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
             }
         });
 
