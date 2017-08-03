@@ -1,13 +1,17 @@
 package mx.com.redcup.redcup;
 
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -89,6 +93,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
     public Boolean isEventLiked;
 
     static String postID;
+    Context context;
 
     public RecyclerView.Adapter commentAdapter;
 
@@ -121,7 +126,12 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
         public void onClick(View v) {
             Intent intent = new Intent(getApplicationContext(),ProfileDetailsActivity.class);
             intent.putExtra("user_id",authorUserID);
-            startActivity(intent);
+
+            Pair<View, String> authorPicAnim = Pair.create((View)authorPic, "authorPic");
+            Pair<View, String> authorNameAnim = Pair.create((View)authorName, "authorName");
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, authorPicAnim, authorNameAnim);
+            startActivity(intent,options.toBundle());
         }
     };
 
@@ -136,6 +146,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        context = this;
 
         //Get handle of UI elements
         postContent = (TextView) findViewById(R.id.tv_EventDetails_event_contentn);

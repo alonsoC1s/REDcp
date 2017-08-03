@@ -2,6 +2,7 @@ package mx.com.redcup.redcup.myNavigationFragments;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -19,6 +20,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +66,7 @@ import io.nlopez.smartlocation.SmartLocation;
 import mx.com.redcup.redcup.EventDetailsActivity;
 import mx.com.redcup.redcup.Holders_extensions.BottomSheetInviteFriends;
 import mx.com.redcup.redcup.NewPostActivity;
+import mx.com.redcup.redcup.ProfileDetailsActivity;
 import mx.com.redcup.redcup.R;
 import mx.com.redcup.redcup.myDataModels.AttendanceStatus;
 import mx.com.redcup.redcup.myDataModels.MyEvents;
@@ -172,7 +176,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         public void onClick(View v) {
             Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
             intent.putExtra("event_id",currentMarkerEventID);
-            getActivity().startActivity(intent);
+
+            Pair<View, String> authorPicAnim = Pair.create((View)cardAuthorPic, "authorPic");
+            Pair<View, String> eventTitleAnim = Pair.create((View)bottomSheetTitle, "eventTitle");
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), authorPicAnim, eventTitleAnim);
+            getActivity().startActivity(intent,options.toBundle());
+        }
+    };
+
+    View.OnClickListener openProfileDetails = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getActivity(),ProfileDetailsActivity.class);
+            intent.putExtra("user_id",currentMarkerAuthorID);
+
+            Pair<View, String> authorPicAnim = Pair.create((View)cardAuthorPic, "authorPic");
+            Pair<View, String> authorNameAnim = Pair.create((View)cardAuthorName, "authorName");
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), authorPicAnim, authorNameAnim);
+            startActivity(intent,options.toBundle());
         }
     };
 
@@ -255,6 +278,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         fabNewEvent.setOnClickListener(fabClickCollapsed);
         gotoEventDetails.setOnClickListener(startEventDetails);
+        cardAuthorPic.setOnClickListener(openProfileDetails);
 
         favEvent.setOnClickListener(new View.OnClickListener() {
             @Override

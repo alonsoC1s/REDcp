@@ -35,6 +35,7 @@
             android:layout_alignParentEnd="true"
             >
             <TextView
+                android:transitionName="eventTitle"
                 android:id="@+id/tv_modalsheet_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,11 +68,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
+                    android:transitionName="authorPic"
                     android:id="@+id/card_authorPic"
                     android:layout_width="50dp"
                     android:layout_height="50dp" />
 
                 <TextView
+                    android:transitionName="authorName"
                     android:id="@+id/card_authorName"
                     android:layout_marginLeft="5dp"
                     android:textSize="15dp"
