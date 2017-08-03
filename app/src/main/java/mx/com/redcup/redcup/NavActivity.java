@@ -1,8 +1,9 @@
 package mx.com.redcup.redcup;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -34,7 +35,8 @@ public class NavActivity extends AppCompatActivity {
     UserProfileFragment profileFragment = new UserProfileFragment();
     UserSettingsFragment uSettingsFragment = new UserSettingsFragment();
 
-    Location selectedLocation;
+    Fragment currentVisibleFragment;
+
 
     //Bottom nav, fragment switcher handler
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -85,8 +87,8 @@ public class NavActivity extends AppCompatActivity {
         //Get UI Elements
 
         //Getting Map initialized
-        final MapsFragment testFragment = new MapsFragment();
-        getFragmentManager().beginTransaction().replace(R.id.Nav_activity_content, testFragment).commit();
+        switchToFragment(mapFragment);
+        currentVisibleFragment = mapFragment;
 
         String token = FirebaseInstanceId.getInstance().getToken();
         DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference().child("Users_parent").child(firebaseUID).child("device_token");
@@ -113,7 +115,23 @@ public class NavActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
     public void switchToFragment(Fragment destination){
+        /*
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        if (manager.findFragmentByTag(destination.getClass().getSimpleName()) == null){// This fragment not on manger
+            transaction.add(R.id.Nav_activity_content,destination,destination.getClass().getSimpleName());
+            transaction.commit();
+        } else {// this means theres already this fragment on manger
+            transaction.detach(currentVisibleFragment);
+            transaction.attach(manager.findFragmentByTag(destination.getClass().getSimpleName()));
+            transaction.commit();
+        }
+
+        currentVisibleFragment = destination;
+        */
         getFragmentManager().beginTransaction().replace( R.id.Nav_activity_content, destination ).commit();
     }
 
