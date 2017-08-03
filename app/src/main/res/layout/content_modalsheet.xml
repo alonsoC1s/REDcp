@@ -38,7 +38,6 @@
                 android:id="@+id/tv_modalsheet_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Event Name"
                 android:textSize="25dp"
                 android:textColor="#000"
                 />
@@ -75,7 +74,6 @@
                 <TextView
                     android:id="@+id/card_authorName"
                     android:layout_marginLeft="5dp"
-                    android:text="Author name"
                     android:textSize="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -92,7 +90,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
-                android:text="Content"
                 android:maxHeight="250dp"
                 />
 
