@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -64,13 +65,17 @@ public class NearbyFragment extends Fragment {
         MyEvents.class, R.layout.recyclerrow_events, EventsRecyclerHolder.class, indexRef,dataRef) {
             @Override
             protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
-                viewHolder.setContent(event.getEventContent());
-                viewHolder.setTitle(event.getEventName());
-                viewHolder.setPostID(event.getEventID());
-                if (event.getContentType().equals("Event")) {
-                    viewHolder.setProfilePic(event.getUserID());
+                if (this.getItemCount() != 0) {
+                    viewHolder.setContent(event.getEventContent());
+                    viewHolder.setTitle(event.getEventName());
+                    viewHolder.setPostID(event.getEventID());
+                    if (event.getContentType().equals("Event")) {
+                        viewHolder.setProfilePic(event.getUserID());
+                    } else {
+                        viewHolder.displayEventImage(event.getEventID());
+                    }
                 }else{
-                    viewHolder.displayEventImage(event.getEventID());
+                    viewHolder.setEmptyRV();
                 }
             }
         };
