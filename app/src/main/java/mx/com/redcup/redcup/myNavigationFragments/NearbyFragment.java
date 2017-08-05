@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class NearbyFragment extends Fragment {
 
     public DatabaseReference mDatabase;
     FloatingActionButton createPost;
-    LinearLayout myContainer;
+    RelativeLayout myContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class NearbyFragment extends Fragment {
         // Getting handle of the Recycler view on the layout
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view);
         createPost = (FloatingActionButton) rootView.findViewById(R.id.fab_create_post);
-        myContainer = (LinearLayout) rootView.findViewById(R.id.container_newpost);
+        myContainer = (RelativeLayout) rootView.findViewById(R.id.container_newpost);
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setReverseLayout(true);

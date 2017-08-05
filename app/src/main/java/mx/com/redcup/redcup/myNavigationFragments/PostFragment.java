@@ -132,14 +132,14 @@ public class PostFragment extends Fragment {
 
         myContainer.post(revealAnimationRunnable);
 
+        createdPostID = mDatabase.push().getKey();
+
         sendPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String content = postContent.getText().toString();
-                String pushID = mDatabase.push().getKey();
 
-                createdPostID = pushID;
-                createPost(content,pushID, getCurrentFirebaseUID());
+                createPost(content,createdPostID, getCurrentFirebaseUID());
             }
         });
 
