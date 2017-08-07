@@ -431,19 +431,15 @@ public class EventDetailsActivity extends AppCompatActivity implements OnGeofenc
             public void onDataChange(DataSnapshot dataSnapshot) {
                 MyUsers user = dataSnapshot.getValue(MyUsers.class);
                 authorName.setText(user.getDisplayName());
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
 
-        if (dataIsEvent) {
-            Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
-                    .load(mStorage.child(uID).child("profile_picture")).signature(new StringSignature(uID))
-                    .into(authorPic);
-        }
+        Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                .load(mStorage.child(uID).child("profile_picture")).signature(new StringSignature(uID))
+                .into(authorPic);
     }
 
     public void populateActivityData(final String postID){

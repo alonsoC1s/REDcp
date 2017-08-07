@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:showIn="@layout/fragment_maps">
+
 
     <fragment
         class="com.google.android.gms.maps.MapFragment"
@@ -14,5 +15,10 @@
         android:id="@+id/my_google_map"
         />
 
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        />
 
-</LinearLayout>
+
+</FrameLayout>

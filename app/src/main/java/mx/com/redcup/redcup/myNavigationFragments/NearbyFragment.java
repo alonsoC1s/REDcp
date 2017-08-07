@@ -74,6 +74,7 @@ public class NearbyFragment extends Fragment {
                         viewHolder.setProfilePic(event.getUserID());
                     } else {
                         viewHolder.displayEventImage(event.getEventID());
+                        viewHolder.setProfilePic(event.getUserID());
                     }
                 }else{
                     viewHolder.setEmptyRV();
