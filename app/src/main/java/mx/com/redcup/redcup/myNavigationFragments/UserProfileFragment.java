@@ -1,12 +1,15 @@
 package mx.com.redcup.redcup.myNavigationFragments;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -63,6 +66,12 @@ public class UserProfileFragment extends Fragment  {
     View.OnClickListener coverImagePickerBuilder = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED ) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return;
+            }
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, 1);
@@ -72,6 +81,12 @@ public class UserProfileFragment extends Fragment  {
     View.OnClickListener profileImagePickerBuilder = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED ) {
+
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return;
+            }
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, 2);

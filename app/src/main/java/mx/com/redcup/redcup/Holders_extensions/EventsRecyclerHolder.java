@@ -37,6 +37,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
     private final ImageView mProfilePic;
     private final ImageView eventPicture;
 
+
     public String eventID;
 
     CardView mCard;
@@ -122,10 +123,5 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
         eventID = postID;
     }
 
-    public void setEmptyRV(){
-        eventTitle.setText("You don't have any posts :) Go make some friends");
-        eventTitle.setTextSize(30);
-        mCard.setClickable(false);
-    }
 
 }
