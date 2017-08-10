@@ -27,6 +27,7 @@ public class MyEvents {
     public boolean eventPublic;
     public MyDate eventDate;
     public String contentType;
+    public boolean sponsored;
 
 
     public MyEvents(){
@@ -47,6 +48,7 @@ public class MyEvents {
 
         eventDate = new MyDate(year,month,day,hour,minute);
         this.contentType = "Event";
+        this.sponsored = false;
 
     }
 
@@ -68,6 +70,8 @@ public class MyEvents {
     public String getEventMinutes(){ return String.valueOf(eventDate.getMinutes());}
 
     public String getContentType(){ return  this.contentType;}
+
+    public boolean isSponsored(){ return  this.sponsored;}
 
 
     @Exclude

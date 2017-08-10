@@ -14,6 +14,7 @@ public class MyPosts extends MyEvents {
     public Map<String ,String> likes = new HashMap<>();
     public MyEventComments event_comments;
     public String contentType;
+    public boolean sponsored;
 
     public MyPosts(){
         //Default empty constructor
@@ -30,6 +31,7 @@ public class MyPosts extends MyEvents {
         eventDate = null;
         eventLatitude = null;
         eventLongitude = null;
+        this.sponsored = false;
     }
 
     @Override
@@ -54,4 +56,7 @@ public class MyPosts extends MyEvents {
     public String getEventContent() {
         return this.eventContent;
     }
+
+    @Override
+    public boolean isSponsored() {return sponsored;}
 }

@@ -36,9 +36,10 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
     private final TextView eventTitle;
     private final ImageView mProfilePic;
     private final ImageView eventPicture;
-
+    public TextView sponsoredBadge;
 
     public String eventID;
+    public boolean sponsoredEvent;
 
     CardView mCard;
 
@@ -54,6 +55,7 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
         mProfilePic = (ImageView) itemView.findViewById(R.id.iv_fb_userpic);
         mCard = (CardView) itemView.findViewById(R.id.card_view);
         eventPicture = (ImageView) itemView.findViewById(R.id.iv_event_picture);
+        sponsoredBadge = (TextView) itemView.findViewById(R.id.tv_event_sponsoredBadge);
 
         context = itemView.getContext();
 
@@ -121,6 +123,13 @@ public class EventsRecyclerHolder extends RecyclerView.ViewHolder {
 
     public void setPostID(String postID){
         eventID = postID;
+    }
+
+    public void setSponsoredStatus(Boolean isSponsored){
+        sponsoredEvent = isSponsored;
+        if (isSponsored) {
+            sponsoredBadge.setVisibility(View.VISIBLE);
+        }
     }
 
 

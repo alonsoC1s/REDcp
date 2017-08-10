@@ -73,6 +73,7 @@ public class NearbyFragment extends Fragment {
             @Override
             protected void populateViewHolder(EventsRecyclerHolder viewHolder, MyEvents event, int position) {
                 if (this.getItemCount() != 0) {
+                    viewHolder.setSponsoredStatus(event.isSponsored());
                     viewHolder.setContent(event.getEventContent());
                     viewHolder.setTitle(event.getEventName());
                     viewHolder.setPostID(event.getEventID());
