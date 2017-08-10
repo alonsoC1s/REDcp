@@ -15,10 +15,11 @@
         android:id="@+id/my_google_map"
         />
 
+    <!--
     <com.arlib.floatingsearchview.FloatingSearchView
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         />
-
+    -->
 
 </FrameLayout>
